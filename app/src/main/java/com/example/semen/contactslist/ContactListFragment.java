@@ -1,7 +1,10 @@
 package com.example.semen.contactslist;
 
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.semen.contactslist.model.Contact;
+
+import java.util.ArrayList;
 
 
 /**
@@ -43,17 +50,18 @@ public class ContactListFragment extends Fragment {
         buttonOpenDetailFragment = view.findViewById(R.id.buttonOpenDetailFragment);
         etContactListFragment = view.findViewById(R.id.etContactListFragment);
 
+        getContacts();
+
         buttonOpenDetailFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "Message from Fragment");
-//                Toast.makeText(getContext(), "Find Context", Toast.LENGTH_SHORT).show();
 
                 DetailFragment detailFragment = new DetailFragment();
 
                 String message = etContactListFragment.getText().toString();
 
-                sendDataToDetailFragment(message,detailFragment);
+                sendDataToDetailFragment(message, detailFragment);
 
                 loadFragment(detailFragment);
             }
@@ -67,13 +75,46 @@ public class ContactListFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
+    //Отправление данных в другой фрагмент
     private void sendDataToDetailFragment(String message, Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putString("Message", message);
         fragment.setArguments(bundle);
     }
 
-    //TODO: залить на GitHub
-    //TODO: исправить название проекта
+    //Получение данных из ContentProvider
+    public void getContacts() {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
 
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+
+                Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                        new String[]{id},
+                        null);
+
+                ArrayList<String> phoneNumbers = new ArrayList<>();
+
+                while (phoneCursor.moveToNext()) {
+                    String phoneNumber = phoneCursor.getString(
+                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    phoneNumbers.add(phoneNumber);
+                }
+
+                phoneCursor.close();
+
+                Log.i(TAG, new Contact(contactName, phoneNumbers).toString());
+            }
+        }
+        cursor.close();
+    }
 }

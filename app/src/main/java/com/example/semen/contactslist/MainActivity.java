@@ -23,9 +23,12 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO: 2 раза используется код loadFragment() в MainActivity и CaontactListFragment
     //TODO: Чтение данных из ContentProvider с помощью ContentResolver в отдельном классе
+    //TODO: Получить имена и номера телефонов вывести в консоли (Ivan Ivanov 89992152255)
     //TODO: Реализовать RecyclerViewAdapter
     //TODO: Добавить данные RecyclerViewAdapter
     //TODO: Передать значение из RecyclerView в DetailFragment
+    //TODO: Создать класс Contact
+    //TODO: Создать класс Contact
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
