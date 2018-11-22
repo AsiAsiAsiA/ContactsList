@@ -1,14 +1,13 @@
 package com.example.semen.contactslist;
 
 
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,9 +27,9 @@ import java.util.ArrayList;
  */
 public class ContactListFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
-    Button buttonOpenDetailFragment;
-    EditText etContactListFragment;
 
+    RecyclerView recyclerView;
+    List<Contact> contactArrayList = null;
 
     public ContactListFragment() {
         // Required empty public constructor
@@ -47,25 +47,23 @@ public class ContactListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        buttonOpenDetailFragment = view.findViewById(R.id.buttonOpenDetailFragment);
-        etContactListFragment = view.findViewById(R.id.etContactListFragment);
+        contactArrayList = ContactsContentResolver.getContacts(getActivity());
 
-        getContacts();
+        recyclerView = view.findViewById(R.id.my_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        buttonOpenDetailFragment.setOnClickListener(new View.OnClickListener() {
+        recyclerView.setAdapter(new ContactsAdapter(contactArrayList, new ContactsAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Message from Fragment");
+            public void onItemClick(Contact item) {
+                Toast.makeText(getContext(), item.getId(), Toast.LENGTH_SHORT).show();
 
                 DetailFragment detailFragment = new DetailFragment();
 
-                String message = etContactListFragment.getText().toString();
-
-                sendDataToDetailFragment(message, detailFragment);
+                sendDataToDetailFragment(item.getId(), detailFragment);
 
                 loadFragment(detailFragment);
             }
-        });
+        }));
     }
 
     private void loadFragment(Fragment fragment) {
@@ -80,41 +78,5 @@ public class ContactListFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("Message", message);
         fragment.setArguments(bundle);
-    }
-
-    //Получение данных из ContentProvider
-    public void getContacts() {
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-
-                Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                        new String[]{id},
-                        null);
-
-                ArrayList<String> phoneNumbers = new ArrayList<>();
-
-                while (phoneCursor.moveToNext()) {
-                    String phoneNumber = phoneCursor.getString(
-                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    phoneNumbers.add(phoneNumber);
-                }
-
-                phoneCursor.close();
-
-                Log.i(TAG, new Contact(contactName, phoneNumbers).toString());
-            }
-        }
-        cursor.close();
     }
 }

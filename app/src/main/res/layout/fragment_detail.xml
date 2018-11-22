@@ -8,14 +8,38 @@
 
 
     <TextView
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/second_textview" />
+        android:text="@string/second_textview"
+        android:textSize="16sp"
+        android:padding="16dp"/>
 
     <TextView
-        android:id="@+id/tvMessage"
+        android:id="@+id/tvMessageFromEditText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/message" />
+
+    <TextView
+        android:id="@+id/tvContactDetail"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/contact_detail"
+        android:textSize="16sp"
+        android:padding="16dp"/>
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/name" />
+
+    <TextView
+        android:id="@+id/tvPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/phone_number" />
 
 </LinearLayout>

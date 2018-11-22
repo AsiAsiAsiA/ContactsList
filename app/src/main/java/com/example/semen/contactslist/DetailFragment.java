@@ -18,7 +18,10 @@ import android.widget.TextView;
 public class DetailFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
 
-    TextView tvMessage;
+    TextView tvMessageFromEditText;
+    TextView tvContactDetail;
+    TextView tvName;
+    TextView tvPhoneNumber;
 
 
     public DetailFragment() {
@@ -41,7 +44,13 @@ public class DetailFragment extends Fragment {
         String message = bundle.getString("Message", "No data from ContactFragment");
         Log.i(TAG,message);
 
-        tvMessage = view.findViewById(R.id.tvMessage);
-        tvMessage.setText(message);
+        tvMessageFromEditText = view.findViewById(R.id.tvMessageFromEditText);
+        tvMessageFromEditText.setText(tvMessageFromEditText.getText() + message);
+
+        tvContactDetail = view.findViewById(R.id.tvContactDetail);
+        tvName = view.findViewById(R.id.tvName);
+        tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
+
+
     }
 }
