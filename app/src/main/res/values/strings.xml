@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ContactsList</string>
+
+    <string name="ContactListFragment_title">ContactsListFragment</string>
+    <string name="button_move_to_DetailFragment">Move to DetailFragment</string>
+    <string name="DetailFragment_title">Move to DetailFragment</string>
+    <string name="second_textview">DetailFragment</string>
+    <string name="message">Message From ContactListFragment</string>
+
+</resources>
