@@ -11,12 +11,12 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsContentResolver {
+class ContactsContentResolver {
     private static final String TAG = "ContactsContentResolver";
-    private static  ArrayList<Contact> contactArrayList;
+    private static ArrayList<Contact> contactArrayList;
 
     //Получение данных из ContentProvider
-    public static List<Contact> getContacts(Context context) {
+    static List<Contact> getContacts(Context context) {
         contactArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -31,22 +31,23 @@ public class ContactsContentResolver {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-                List<String> phoneNumbers = getListPhoneNumbers(contentResolver,id);
+                List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
 
                 Contact contact = new Contact(id, contactName, phoneNumbers);
                 contactArrayList.add(contact);
                 Log.i(TAG, contact.toString());
             }
+            cursor.close();
         }
-        cursor.close();
+
         return contactArrayList;
     }
 
     //Получение контакта по ID
-    public static Contact findContactById(String id){
+    static Contact findContactById(String id) {
         Contact contact = null;
-        for (int i = 0; i <contactArrayList.size() ; i++) {
-            if (contactArrayList.get(i).getId()==id){
+        for (int i = 0; i < contactArrayList.size(); i++) {
+            if (contactArrayList.get(i).getId().equals(id)) {
                 contact = contactArrayList.get(i);
                 break;
             }
@@ -55,20 +56,23 @@ public class ContactsContentResolver {
     }
 
     //Получение всех номеров контакта
-    public static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id){
+    private static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id) {
         ArrayList<String> listPhoneNumbers = new ArrayList<>();
+
         Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                 new String[]{id},
                 null);
 
-        while (phoneCursor.moveToNext()) {
-            String phoneNumber = phoneCursor.getString(
-                    phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            listPhoneNumbers.add(phoneNumber);
+        if (phoneCursor != null) {
+            while (phoneCursor.moveToNext()) {
+                String phoneNumber = phoneCursor.getString(
+                        phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                listPhoneNumbers.add(phoneNumber);
+            }
+            phoneCursor.close();
         }
-        phoneCursor.close();
 
         return listPhoneNumbers;
     }

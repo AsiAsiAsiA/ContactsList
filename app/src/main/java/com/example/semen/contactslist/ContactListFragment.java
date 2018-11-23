@@ -22,18 +22,21 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class ContactListFragment extends Fragment {
-    private final String TAG = this.getClass().getSimpleName();
-
     RecyclerView recyclerView;
-    List<Contact> contactArrayList = null;
+    List<Contact> contactArrayList;
 
     public ContactListFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contact_list, container, false);
@@ -58,6 +61,7 @@ public class ContactListFragment extends Fragment {
         }));
     }
 
+    //Размещение фрагмента во фрейм
     private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);

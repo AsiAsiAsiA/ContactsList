@@ -13,7 +13,6 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.List;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
-    private final String TAG = this.getClass().getSimpleName();
 
     public interface OnItemClickListener {
         void onItemClick(Contact item);
@@ -22,7 +21,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     private final OnItemClickListener listener;
     private List<Contact> contacts;
 
-    public ContactsAdapter(List<Contact> contacts,OnItemClickListener listener) {
+    public ContactsAdapter(List<Contact> contacts, OnItemClickListener listener) {
         this.contacts = contacts;
         this.listener = listener;
     }
@@ -44,15 +43,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return contacts.size();
     }
 
-    public static class ContactsViewHolder extends RecyclerView.ViewHolder {
+    static class ContactsViewHolder extends RecyclerView.ViewHolder {
         TextView name;
 
-        public ContactsViewHolder(View itemView) {
+        ContactsViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
         }
 
-        public void bind(final Contact contact, final OnItemClickListener listener) {
+        void bind(final Contact contact, final OnItemClickListener listener) {
             name.setText("id: " + contact.getId() + " name: " + contact.getName());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -34,10 +34,6 @@ public class Contact {
         return phoneNumbers;
     }
 
-    public void setPhoneNumbers(ArrayList<String> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
-    }
-
     @Override
     public String toString() {
         return "Contact{" +

@@ -12,7 +12,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadFragment(new ContactListFragment());
+        if (savedInstanceState == null) {
+            loadFragment(new ContactListFragment());
+        }
     }
 
     private void loadFragment(Fragment fragment) {
