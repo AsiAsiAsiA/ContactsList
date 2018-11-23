@@ -31,21 +31,7 @@ public class ContactsContentResolver {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-                Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                        new String[]{id},
-                        null);
-
-                ArrayList<String> phoneNumbers = new ArrayList<>();
-
-                while (phoneCursor.moveToNext()) {
-                    String phoneNumber = phoneCursor.getString(
-                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    phoneNumbers.add(phoneNumber);
-                }
-
-                phoneCursor.close();
+                List<String> phoneNumbers = getListPhoneNumbers(contentResolver,id);
 
                 Contact contact = new Contact(id, contactName, phoneNumbers);
                 contactArrayList.add(contact);
@@ -56,6 +42,7 @@ public class ContactsContentResolver {
         return contactArrayList;
     }
 
+    //Получение контакта по ID
     public static Contact findContactById(String id){
         Contact contact = null;
         for (int i = 0; i <contactArrayList.size() ; i++) {
@@ -65,5 +52,24 @@ public class ContactsContentResolver {
             }
         }
         return contact;
+    }
+
+    //Получение всех номеров контакта
+    public static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id){
+        ArrayList<String> listPhoneNumbers = new ArrayList<>();
+        Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                null,
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                new String[]{id},
+                null);
+
+        while (phoneCursor.moveToNext()) {
+            String phoneNumber = phoneCursor.getString(
+                    phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            listPhoneNumbers.add(phoneNumber);
+        }
+        phoneCursor.close();
+
+        return listPhoneNumbers;
     }
 }

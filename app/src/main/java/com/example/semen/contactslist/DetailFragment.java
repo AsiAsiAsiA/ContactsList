@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.semen.contactslist.model.Contact;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,11 +20,8 @@ import android.widget.TextView;
 public class DetailFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
 
-    TextView tvMessageFromEditText;
-    TextView tvContactDetail;
     TextView tvName;
     TextView tvPhoneNumber;
-
 
     public DetailFragment() {
         // Required empty public constructor
@@ -41,16 +40,14 @@ public class DetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        String message = bundle.getString("Message", "No data from ContactFragment");
-        Log.i(TAG,message);
+        String contactId = bundle.getString("_id", "Empty");
+        Log.i(TAG, contactId);
 
-        tvMessageFromEditText = view.findViewById(R.id.tvMessageFromEditText);
-        tvMessageFromEditText.setText(tvMessageFromEditText.getText() + message);
+        Contact contact = ContactsContentResolver.findContactById(contactId);
 
-        tvContactDetail = view.findViewById(R.id.tvContactDetail);
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
-
-
+        tvName.setText("Name: " + contact.getName());
+        tvPhoneNumber.setText("Phone Number: " + contact.getPhoneNumbers().toString());
     }
 }

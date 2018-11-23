@@ -13,21 +13,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ContactListFragment contactListFragment = new ContactListFragment();
-
         loadFragment(new ContactListFragment());
-
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
     }
-
-    //TODO: 2 раза используется код loadFragment() в MainActivity и CaontactListFragment
-    //TODO: Чтение данных из ContentProvider с помощью ContentResolver в отдельном классе
-    //TODO: Реализовать RecyclerViewAdapter
-    //TODO: Добавить данные RecyclerViewAdapter
-    //TODO: Передать значение из RecyclerView в DetailFragment
-
-
+    //TODO: Добавить RecyclerView в DetailFragment
+    //TODO: Проверить сохраняется ли состояние при повороте
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

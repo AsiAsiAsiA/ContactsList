@@ -28,7 +28,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.listener = listener;
     }
 
-
     @NonNull
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,18 +37,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, final int position) {
-//        final Contact contact = contacts.get(position);
-
         holder.bind(contacts.get(position), listener);
-//
-//        holder.name.setText("id: " + contact.getId()+" name: " + contact.getName());
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Log.i(TAG,contact.toString());
-//            }
-//        });
     }
 
     @Override

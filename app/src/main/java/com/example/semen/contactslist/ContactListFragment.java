@@ -55,12 +55,8 @@ public class ContactListFragment extends Fragment {
         recyclerView.setAdapter(new ContactsAdapter(contactArrayList, new ContactsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Contact item) {
-                Toast.makeText(getContext(), item.getId(), Toast.LENGTH_SHORT).show();
-
                 DetailFragment detailFragment = new DetailFragment();
-
                 sendDataToDetailFragment(item.getId(), detailFragment);
-
                 loadFragment(detailFragment);
             }
         }));
@@ -76,7 +72,7 @@ public class ContactListFragment extends Fragment {
     //Отправление данных в другой фрагмент
     private void sendDataToDetailFragment(String message, Fragment fragment) {
         Bundle bundle = new Bundle();
-        bundle.putString("Message", message);
+        bundle.putString("_id", message);
         fragment.setArguments(bundle);
     }
 }

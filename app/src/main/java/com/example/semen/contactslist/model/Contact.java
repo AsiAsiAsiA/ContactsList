@@ -1,13 +1,14 @@
 package com.example.semen.contactslist.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Contact {
     private String id;
     private String name;
-    private ArrayList<String> phoneNumbers;
+    private List<String> phoneNumbers;
 
-    public Contact(String id, String name, ArrayList<String> phoneNumbers) {
+    public Contact(String id, String name, List<String> phoneNumbers) {
         this.id = id;
         this.name = name;
         this.phoneNumbers = phoneNumbers;
@@ -29,7 +30,7 @@ public class Contact {
         this.name = name;
     }
 
-    public ArrayList<String> getPhoneNumbers() {
+    public List<String> getPhoneNumbers() {
         return phoneNumbers;
     }
 
