@@ -13,11 +13,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ContactListFragment contactListFragment = new ContactListFragment();
-        loadFragment(new ContactListFragment());
+        if (savedInstanceState == null){
+            ContactListFragment contactListFragment = new ContactListFragment();
+            loadFragment(new ContactListFragment());
+        }
     }
-    //TODO: Добавить RecyclerView в DetailFragment
-    //TODO: Проверить сохраняется ли состояние при повороте
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
