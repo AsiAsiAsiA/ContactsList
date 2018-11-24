@@ -5,9 +5,8 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/contactInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="@string/no_text"/>
+        android:textSize="@dimen/regular_text_size" />
 </LinearLayout>

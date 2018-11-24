@@ -2,11 +2,12 @@ package com.example.semen.contactslist.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Contact {
-    private String id;
-    private String name;
-    private List<String> phoneNumbers;
+    private final String id;
+    private final String name;
+    private final List<String> phoneNumbers;
 
     public Contact(String id, String name, List<String> phoneNumbers) {
         this.id = id;
@@ -18,16 +19,8 @@ public class Contact {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<String> getPhoneNumbers() {
@@ -41,5 +34,20 @@ public class Contact {
                 ", name='" + name + '\'' +
                 ", phoneNumbers=" + phoneNumbers +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return Objects.equals(id, contact.id) &&
+                Objects.equals(name, contact.name) &&
+                Objects.equals(phoneNumbers, contact.phoneNumbers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, phoneNumbers);
     }
 }

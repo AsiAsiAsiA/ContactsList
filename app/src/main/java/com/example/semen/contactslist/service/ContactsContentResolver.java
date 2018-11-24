@@ -1,4 +1,4 @@
-package com.example.semen.contactslist;
+package com.example.semen.contactslist.service;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,12 +11,14 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-class ContactsContentResolver {
+public class ContactsContentResolver {
     private static final String TAG = "ContactsContentResolver";
+    //TODO:Хранение списка контактов static контексте программы - не оправдано с точки зрения юзабилити приложения, т.к. для того что бы перезагрузить список контактов придется перезапускать приложение.
+    //TODO:Во первых - List, во вторых для чего нам он как статик?
     private static ArrayList<Contact> contactArrayList;
 
     //Получение данных из ContentProvider
-    static List<Contact> getContacts(Context context) {
+    public static List<Contact> getContacts(Context context) {
         contactArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -26,6 +28,7 @@ class ContactsContentResolver {
                 null,
                 null);
 
+        //TODO:обернуть в try-finally
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
@@ -37,6 +40,7 @@ class ContactsContentResolver {
                 contactArrayList.add(contact);
                 Log.i(TAG, contact.toString());
             }
+            //TODO:Закрывать курсор в finally блоке
             cursor.close();
         }
 
@@ -44,7 +48,7 @@ class ContactsContentResolver {
     }
 
     //Получение контакта по ID
-    static Contact findContactById(String id) {
+    public static Contact findContactById(String id) {
         Contact contact = null;
         for (int i = 0; i < contactArrayList.size(); i++) {
             if (contactArrayList.get(i).getId().equals(id)) {
@@ -57,6 +61,7 @@ class ContactsContentResolver {
 
     //Получение всех номеров контакта
     private static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id) {
+        //TODO:List<>
         ArrayList<String> listPhoneNumbers = new ArrayList<>();
 
         Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -65,12 +70,14 @@ class ContactsContentResolver {
                 new String[]{id},
                 null);
 
+        //TODO:try-finally
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
                 String phoneNumber = phoneCursor.getString(
                         phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 listPhoneNumbers.add(phoneNumber);
             }
+            //TODO:Закрывать курсор в finally блоке
             phoneCursor.close();
         }
 

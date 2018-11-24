@@ -12,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.semen.contactslist.DetailFragment;
+import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.service.ContactsContentResolver;
 
 import java.util.List;
 
@@ -25,14 +28,12 @@ public class ContactListFragment extends Fragment {
     RecyclerView recyclerView;
     List<Contact> contactArrayList;
 
-    public ContactListFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        //TODO:setRetainInstance(true); не стоит использовать для фрагментов у которых есть View
+        //TODO:По возможности стоит избегать retain фрагментов. В крайнем случае делать их без view, иначе утечки памяти
     }
 
     @Override
@@ -46,14 +47,20 @@ public class ContactListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        contactArrayList = ContactsContentResolver.getContacts(getActivity());
+        //TODO: Чтение контактов на главном потоке программы. Неприемлемо с точки зрения отзывчивого UI.
+        //TODO:Так же не спрашивается разрешение на чтение контактов.
+        //TODO:Получение данных - лучше вынести в другой поток.
+        contactArrayList = ContactsContentResolver.getContacts(requireContext());
 
+        //TODO:Лучше перейти на Java 8 и лямбды
         recyclerView = view.findViewById(R.id.my_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         recyclerView.setAdapter(new ContactsAdapter(contactArrayList, new ContactsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Contact item) {
+                //TODO:Создание и инициализацию фрагмента принято делать в методе newInstance фрагмента.
                 DetailFragment detailFragment = new DetailFragment();
                 sendDataToDetailFragment(item.getId(), detailFragment);
                 loadFragment(detailFragment);
@@ -62,6 +69,7 @@ public class ContactListFragment extends Fragment {
     }
 
     //Размещение фрагмента во фрейм
+    //TODO:оформить как цепочку
     private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -69,6 +77,7 @@ public class ContactListFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
+    //TODO:Эта логика должна быть внтури newInstance того фрагмента, который создается, как и создание фрагмента.
     //Отправление данных в другой фрагмент
     private void sendDataToDetailFragment(String message, Fragment fragment) {
         Bundle bundle = new Bundle();

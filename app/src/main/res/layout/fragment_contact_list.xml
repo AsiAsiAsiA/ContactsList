@@ -6,11 +6,12 @@
     android:orientation="vertical"
     tools:context=".ContactListFragment">
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="20dp"
+        android:textSize="@dimen/title_text_size"
         android:text="@string/contactListFragment_title" />
 
     <android.support.v7.widget.RecyclerView

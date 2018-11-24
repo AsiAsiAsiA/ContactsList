@@ -12,18 +12,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/contact_detail"
-        android:textSize="16sp" />
+        android:textSize="@dimen/title_text_size" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/name" />
+        android:text="@string/name"
+        android:textSize="@dimen/regular_text_size"/>
 
     <TextView
         android:id="@+id/tvPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/phone_number" />
+        android:text="@string/phone_number"
+        android:textSize="@dimen/regular_text_size"/>
 
 </LinearLayout>

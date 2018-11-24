@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.service.ContactsContentResolver;
 
 
 /**
@@ -20,13 +21,11 @@ public class DetailFragment extends Fragment {
     TextView tvName;
     TextView tvPhoneNumber;
 
-    public DetailFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //TODO: setRetainInstance(true); не стоит использовать для фрагментов у которых есть View
         setRetainInstance(true);
     }
 
@@ -45,11 +44,13 @@ public class DetailFragment extends Fragment {
         Bundle bundle = this.getArguments();
         String contactId = bundle.getString("_id", "Empty");
 
+        //TODO: Чтение на главном потоке. Не спрашиваются разрешение на чтение.
         Contact contact = ContactsContentResolver.findContactById(contactId);
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
-        tvName.setText("Name: " + contact.getName());
-        tvPhoneNumber.setText("Phone Number: " + contact.getPhoneNumbers().toString());
+
+        tvName.setText(String.format("%s %s", getString(R.string.id), contact.getName()));
+        tvPhoneNumber.setText(String.format("%s %s", getString(R.string.phone_number), contact.getPhoneNumbers().toString()));
     }
 }

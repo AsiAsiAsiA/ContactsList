@@ -1,5 +1,6 @@
 package com.example.semen.contactslist.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     private final OnItemClickListener listener;
     private List<Contact> contacts;
+    private Context context;
 
     public ContactsAdapter(List<Contact> contacts, OnItemClickListener listener) {
         this.contacts = contacts;
@@ -30,12 +32,13 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_adapter_item, parent, false);
+        context = parent.getContext();
         return new ContactsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, final int position) {
-        holder.bind(contacts.get(position), listener);
+        holder.bind(contacts.get(position), listener,context);
     }
 
     @Override
@@ -48,11 +51,20 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
         ContactsViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.name);
+            name = itemView.findViewById(R.id.contactInfo);
         }
 
-        void bind(final Contact contact, final OnItemClickListener listener) {
-            name.setText("id: " + contact.getId() + " name: " + contact.getName());
+        void bind(final Contact contact, final OnItemClickListener listener,Context context) {
+
+            name.setText(String.format("%s %s %s %s",
+                    context.getString(R.string.id),
+                    contact.getId(),
+                    context.getString(R.string.name),
+                    contact.getName()));
+
+            //TODO:setOnClickListener следует делать в конструкторе вьюхолдера.
+            //TODO:listener-ы назначать в конструкторе viewholder'a
+            //TODO: https://hackernoon.com/android-recyclerview-onitemclicklistener-getadapterposition-a-better-way-3c789baab4db
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
