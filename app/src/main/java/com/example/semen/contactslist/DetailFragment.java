@@ -21,12 +21,14 @@ public class DetailFragment extends Fragment {
     TextView tvName;
     TextView tvPhoneNumber;
 
+    public static DetailFragment newInstance(String id) {
+        Bundle args = new Bundle();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //TODO: setRetainInstance(true); не стоит использовать для фрагментов у которых есть View
-        setRetainInstance(true);
+        DetailFragment fragment = new DetailFragment();
+        args.putString("_id", id);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
 

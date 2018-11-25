@@ -65,12 +65,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             //TODO:setOnClickListener следует делать в конструкторе вьюхолдера.
             //TODO:listener-ы назначать в конструкторе viewholder'a
             //TODO: https://hackernoon.com/android-recyclerview-onitemclicklistener-getadapterposition-a-better-way-3c789baab4db
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(contact);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(contact));
         }
     }
 }

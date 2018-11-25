@@ -5,15 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.semen.contactslist.DetailFragment;
-import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.ContactsContentResolver;
@@ -28,12 +25,8 @@ public class ContactListFragment extends Fragment {
     RecyclerView recyclerView;
     List<Contact> contactArrayList;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        //TODO:setRetainInstance(true); не стоит использовать для фрагментов у которых есть View
-        //TODO:По возможности стоит избегать retain фрагментов. В крайнем случае делать их без view, иначе утечки памяти
+    public static ContactListFragment newInstance() {
+        return new ContactListFragment();
     }
 
     @Override
@@ -52,36 +45,17 @@ public class ContactListFragment extends Fragment {
         //TODO:Получение данных - лучше вынести в другой поток.
         contactArrayList = ContactsContentResolver.getContacts(requireContext());
 
-        //TODO:Лучше перейти на Java 8 и лямбды
         recyclerView = view.findViewById(R.id.my_recycler_view);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        recyclerView.setAdapter(new ContactsAdapter(contactArrayList, new ContactsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Contact item) {
-                //TODO:Создание и инициализацию фрагмента принято делать в методе newInstance фрагмента.
-                DetailFragment detailFragment = new DetailFragment();
-                sendDataToDetailFragment(item.getId(), detailFragment);
-                loadFragment(detailFragment);
-            }
-        }));
+        recyclerView.setAdapter(new ContactsAdapter(contactArrayList,
+                item -> loadFragment(DetailFragment.newInstance(item.getId()))));
     }
 
     //Размещение фрагмента во фрейм
-    //TODO:оформить как цепочку
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    //TODO:Эта логика должна быть внтури newInstance того фрагмента, который создается, как и создание фрагмента.
-    //Отправление данных в другой фрагмент
-    private void sendDataToDetailFragment(String message, Fragment fragment) {
-        Bundle bundle = new Bundle();
-        bundle.putString("_id", message);
-        fragment.setArguments(bundle);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
