@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.ContactsContentResolver;
+import com.example.semen.contactslist.service.DetailAsyncTask;
+
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -20,6 +22,7 @@ import com.example.semen.contactslist.service.ContactsContentResolver;
 public class DetailFragment extends Fragment {
     TextView tvName;
     TextView tvPhoneNumber;
+    Contact contact = null;
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -46,8 +49,18 @@ public class DetailFragment extends Fragment {
         Bundle bundle = this.getArguments();
         String contactId = bundle.getString("_id", "Empty");
 
-        //TODO: Чтение на главном потоке. Не спрашиваются разрешение на чтение.
-        Contact contact = ContactsContentResolver.findContactById(contactId);
+        //TODO: Не спрашиваются разрешение на чтение.
+//        Contact contact = ContactsContentResolver.findContactById(contactId,requireContext());
+
+        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId);
+        detailAsyncTask.execute(requireContext());
+
+        try {
+            contact = detailAsyncTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);

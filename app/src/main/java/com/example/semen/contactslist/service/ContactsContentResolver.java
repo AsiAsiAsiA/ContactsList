@@ -13,17 +13,14 @@ import java.util.List;
 
 public class ContactsContentResolver {
     private static final String TAG = "ContactsContentResolver";
-    //TODO:Хранение списка контактов static контексте программы - не оправдано с точки зрения юзабилити приложения, т.к. для того что бы перезагрузить список контактов придется перезапускать приложение.
-    //TODO:во вторых для чего нам он как статик?
-    private static List<Contact> contactArrayList;
 
     //Получение данных из ContentProvider
-    public static List<Contact> getContacts(Context context) {
-        contactArrayList = new ArrayList<>();
+   static List<Contact> getContacts(Context context) {
+        List<Contact> contactArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
-        try(Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+        try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -45,14 +42,26 @@ public class ContactsContentResolver {
     }
 
     //Получение контакта по ID
-    public static Contact findContactById(String id) {
+    static Contact findContactById(String id, Context context) {
         Contact contact = null;
-        for (int i = 0; i < contactArrayList.size(); i++) {
-            if (contactArrayList.get(i).getId().equals(id)) {
-                contact = contactArrayList.get(i);
-                break;
+        ContentResolver contentResolver = context.getContentResolver();
+        try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+                new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
+                ContactsContract.Contacts._ID + " = ?",
+                new String[]{id},
+                null)) {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+
+                    List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
+
+                    contact = new Contact(id, contactName, phoneNumbers);
+                    Log.i(TAG, contact.toString());
+                }
             }
         }
+
         return contact;
     }
 
@@ -60,11 +69,11 @@ public class ContactsContentResolver {
     private static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id) {
         List<String> listPhoneNumbers = new ArrayList<>();
 
-        try(Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        try (Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                 new String[]{id},
-                null)){
+                null)) {
             if (phoneCursor != null) {
                 while (phoneCursor.moveToNext()) {
                     String phoneNumber = phoneCursor.getString(

@@ -8,11 +8,12 @@
 
 
     <TextView
+        android:id="@+id/contactListFragment_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="@dimen/title_text_size"
-        android:text="@string/contactListFragment_title" />
+        android:text="@string/reading_from_database" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"

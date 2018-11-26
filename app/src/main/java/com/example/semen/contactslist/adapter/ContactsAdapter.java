@@ -3,6 +3,7 @@ package com.example.semen.contactslist.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,57 +16,68 @@ import java.util.List;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClick(Contact item);
-    }
-
-    private final OnItemClickListener listener;
+    private ItemClickListener itemClickListener;
     private List<Contact> contacts;
     private Context context;
 
-    public ContactsAdapter(List<Contact> contacts, OnItemClickListener listener) {
+    public ContactsAdapter(Context context, List<Contact> contacts) {
         this.contacts = contacts;
-        this.listener = listener;
+        this.context = context;
+        Log.i("RECYCLER_VIEW", "ContactsAdapter(Context context, List<Contact> contacts, OnItemClickListener listener)");
     }
 
     @NonNull
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_adapter_item, parent, false);
-        context = parent.getContext();
+        Log.i("RECYCLER_VIEW", "onCreateViewHolder");
         return new ContactsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, final int position) {
-        holder.bind(contacts.get(position), listener,context);
+        Log.i("RECYCLER_VIEW", "onBindViewHolder");
+        holder.bind(contacts.get(position), context);
     }
 
     @Override
     public int getItemCount() {
+        Log.i("RECYCLER_VIEW", "getItemCount");
         return contacts.size();
     }
 
-    static class ContactsViewHolder extends RecyclerView.ViewHolder {
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener{
+        void onClick(View view, String id);
+    }
+
+    class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name;
 
         ContactsViewHolder(View itemView) {
             super(itemView);
+            Log.i("RECYCLER_VIEW", "ContactsViewHolder(View itemView)");
             name = itemView.findViewById(R.id.contactInfo);
+            itemView.setTag(itemView);
+            itemView.setOnClickListener(this);
         }
 
-        void bind(final Contact contact, final OnItemClickListener listener,Context context) {
-
+        void bind(final Contact contact,  Context context) {
+            Log.i("RECYCLER_VIEW", "bind");
             name.setText(String.format("%s %s %s %s",
                     context.getString(R.string.id),
                     contact.getId(),
                     context.getString(R.string.name),
                     contact.getName()));
+        }
 
-            //TODO:setOnClickListener следует делать в конструкторе вьюхолдера.
-            //TODO:listener-ы назначать в конструкторе viewholder'a
-            //TODO: https://hackernoon.com/android-recyclerview-onitemclicklistener-getadapterposition-a-better-way-3c789baab4db
-            itemView.setOnClickListener(v -> listener.onItemClick(contact));
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            itemClickListener.onClick(view, contacts.get(position).getId());
         }
     }
 }
