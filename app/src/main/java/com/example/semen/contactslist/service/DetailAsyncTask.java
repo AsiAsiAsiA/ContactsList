@@ -24,8 +24,9 @@ public class DetailAsyncTask extends AsyncTask<Context, Void, Contact> {
     @Override
     protected void onPostExecute(Contact contact) {
         super.onPostExecute(contact);
-        if (delegate.get()!=null){
-            delegate.get().loadContactFromContentProvider(contact);
+        AsyncResponseDetailFragment callback = delegate.get();
+        if (callback!=null){
+            callback.loadContactFromContentProvider(contact);
         }
     }
 }

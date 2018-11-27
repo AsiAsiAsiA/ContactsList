@@ -23,8 +23,9 @@ public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
     @Override
     protected void onPostExecute(List<Contact> contacts) {
         super.onPostExecute(contacts);
-        if (delegate.get()!=null){
-            delegate.get().loadList(contacts);
+        AsyncResponseContactListFragment  callback = delegate.get();
+        if (callback != null) {
+            callback.loadList(contacts);
         }
     }
 }
