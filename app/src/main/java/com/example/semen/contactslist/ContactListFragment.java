@@ -1,10 +1,14 @@
 package com.example.semen.contactslist;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,19 +19,21 @@ import android.widget.TextView;
 
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.service.AsyncResponseContactListFragment;
 import com.example.semen.contactslist.service.ContactsAsyncTask;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactListFragment extends Fragment implements AsyncResponse, ContactsAdapter.ItemClickListener {
+public class ContactListFragment extends Fragment implements AsyncResponseContactListFragment, ContactsAdapter.ItemClickListener {
     TextView tvContactListFragmentTitle;
     RecyclerView recyclerView;
-    List<Contact> contactArrayList;
+
+    private static final int REQUEST_CODE_READ_CONTACTS = 1;
+    private static boolean READ_CONTACTS_GRANTED = false;
 
     public static ContactListFragment newInstance() {
         return new ContactListFragment();
@@ -46,26 +52,26 @@ public class ContactListFragment extends Fragment implements AsyncResponse, Cont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        //TODO:Так же не спрашивается разрешение на чтение контактов.
-        ContactsAsyncTask contactsAsyncTask = new ContactsAsyncTask();
-        contactsAsyncTask.delegate = this;
-        contactsAsyncTask.execute(requireContext());
-        try {
-            contactArrayList = contactsAsyncTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
-        Log.i("TAG", tvContactListFragmentTitle.getText().toString());
-
         recyclerView = view.findViewById(R.id.my_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        ContactsAdapter contactsAdapter = new ContactsAdapter(requireContext(), contactArrayList);
-        contactsAdapter.setItemClickListener(this);
-        recyclerView.setAdapter(contactsAdapter);
-
+        tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
+        // получаем разрешения
+        int hasReadContactPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS);
+        // если устройство до API 23, устанавливаем разрешение
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            READ_CONTACTS_GRANTED = true;
+        } else {
+            // вызываем диалоговое окно для установки разрешений
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    REQUEST_CODE_READ_CONTACTS);
+        }
+        // если разрешение установлено, загружаем контакты
+        if (READ_CONTACTS_GRANTED) {
+            ContactsAsyncTask contactsAsyncTask = new ContactsAsyncTask(this);
+            contactsAsyncTask.execute(requireContext());
+        } else {
+            tvContactListFragmentTitle.setText(requireContext().getString(R.string.no_permission));
+        }
     }
 
     //Размещение фрагмента во фрейм
@@ -78,9 +84,14 @@ public class ContactListFragment extends Fragment implements AsyncResponse, Cont
 
     //Окончание запроса в AsyncTask
     @Override
-    public void processFinish() {
+    public void loadList(List<Contact> contacts) {
         tvContactListFragmentTitle.setText(requireContext().getString(R.string.contactListFragment_title));
         Log.i("TAG", "Конец AsyncTask");
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        ContactsAdapter contactsAdapter = new ContactsAdapter(requireContext(), contacts);
+        contactsAdapter.setItemClickListener(this);
+        recyclerView.setAdapter(contactsAdapter);
     }
 
     @Override

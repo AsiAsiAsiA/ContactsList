@@ -11,15 +11,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.service.AsyncResponseDetailFragment;
 import com.example.semen.contactslist.service.DetailAsyncTask;
-
-import java.util.concurrent.ExecutionException;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements AsyncResponseDetailFragment {
     TextView tvName;
     TextView tvPhoneNumber;
     Contact contact = null;
@@ -33,7 +32,6 @@ public class DetailFragment extends Fragment {
 
         return fragment;
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,22 +47,15 @@ public class DetailFragment extends Fragment {
         Bundle bundle = this.getArguments();
         String contactId = bundle.getString("_id", "Empty");
 
-        //TODO: Не спрашиваются разрешение на чтение.
-//        Contact contact = ContactsContentResolver.findContactById(contactId,requireContext());
-
-        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId);
+        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId, this);
         detailAsyncTask.execute(requireContext());
-
-        try {
-            contact = detailAsyncTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
+    }
 
+    @Override
+    public void loadContactFromContentProvider(Contact contact) {
         tvName.setText(String.format("%s %s", getString(R.string.id), contact.getName()));
         tvPhoneNumber.setText(String.format("%s %s", getString(R.string.phone_number), contact.getPhoneNumbers().toString()));
     }

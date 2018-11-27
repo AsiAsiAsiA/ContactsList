@@ -2,20 +2,17 @@ package com.example.semen.contactslist.service;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.example.semen.contactslist.AsyncResponse;
 import com.example.semen.contactslist.model.Contact;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
-    public AsyncResponse delegate = null;
+    private WeakReference<AsyncResponseContactListFragment> delegate;
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        Log.i("TAG","Старт AsyncTask");
+    public ContactsAsyncTask(AsyncResponseContactListFragment asyncResponseContactListFragment) {
+        delegate = new WeakReference<>(asyncResponseContactListFragment);
     }
 
     @Override
@@ -26,6 +23,6 @@ public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
     @Override
     protected void onPostExecute(List<Contact> contacts) {
         super.onPostExecute(contacts);
-        delegate.processFinish();
+        delegate.get().loadList(contacts);
     }
 }

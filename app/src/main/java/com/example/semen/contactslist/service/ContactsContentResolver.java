@@ -11,7 +11,7 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsContentResolver {
+class ContactsContentResolver {
     private static final String TAG = "ContactsContentResolver";
 
     //Получение данных из ContentProvider
@@ -61,11 +61,10 @@ public class ContactsContentResolver {
                 }
             }
         }
-
         return contact;
     }
 
-    //Получение всех номеров контакта
+    //Получение всех номеров одного контакта
     private static List<String> getListPhoneNumbers(ContentResolver contentResolver, String id) {
         List<String> listPhoneNumbers = new ArrayList<>();
 

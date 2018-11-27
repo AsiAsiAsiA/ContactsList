@@ -1,5 +1,7 @@
 package com.example.semen.contactslist.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +28,7 @@ public class Contact {
         return phoneNumbers;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Contact{" +
