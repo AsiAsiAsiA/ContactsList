@@ -8,8 +8,8 @@ import com.example.semen.contactslist.model.Contact;
 import java.lang.ref.WeakReference;
 
 public class DetailAsyncTask extends AsyncTask<Context, Void, Contact> {
-    private WeakReference<AsyncResponseDetailFragment> delegate;
-    private String id;
+    private final WeakReference<AsyncResponseDetailFragment> delegate;
+    private final String id;
 
     public DetailAsyncTask(String id, AsyncResponseDetailFragment asyncResponseDetailFragment) {
         this.id = id;
@@ -24,6 +24,8 @@ public class DetailAsyncTask extends AsyncTask<Context, Void, Contact> {
     @Override
     protected void onPostExecute(Contact contact) {
         super.onPostExecute(contact);
-        delegate.get().loadContactFromContentProvider(contact);
+        if (delegate.get()!=null){
+            delegate.get().loadContactFromContentProvider(contact);
+        }
     }
 }

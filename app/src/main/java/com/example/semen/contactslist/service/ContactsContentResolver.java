@@ -14,7 +14,7 @@ import java.util.List;
 class ContactsContentResolver {
     private static final String TAG = "ContactsContentResolver";
 
-    //Получение данных из ContentProvider
+    //Получение списка контактов из ContentProvider
    static List<Contact> getContacts(Context context) {
         List<Contact> contactArrayList = new ArrayList<>();
 

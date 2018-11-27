@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
-    private WeakReference<AsyncResponseContactListFragment> delegate;
+    private final WeakReference<AsyncResponseContactListFragment> delegate;
 
     public ContactsAsyncTask(AsyncResponseContactListFragment asyncResponseContactListFragment) {
         delegate = new WeakReference<>(asyncResponseContactListFragment);
@@ -23,6 +23,8 @@ public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
     @Override
     protected void onPostExecute(List<Contact> contacts) {
         super.onPostExecute(contacts);
-        delegate.get().loadList(contacts);
+        if (delegate.get()!=null){
+            delegate.get().loadList(contacts);
+        }
     }
 }

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +21,7 @@ import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.AsyncResponseContactListFragment;
 import com.example.semen.contactslist.service.ContactsAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,11 +29,11 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class ContactListFragment extends Fragment implements AsyncResponseContactListFragment, ContactsAdapter.ItemClickListener {
-    TextView tvContactListFragmentTitle;
-    RecyclerView recyclerView;
+    private TextView tvContactListFragmentTitle;
+    private ContactsAdapter contactsAdapter;
+    private List<Contact> contactsList;
 
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
-    private static boolean READ_CONTACTS_GRANTED = false;
 
     public static ContactListFragment newInstance() {
         return new ContactListFragment();
@@ -43,8 +43,6 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
         return inflater.inflate(R.layout.fragment_contact_list, container, false);
     }
 
@@ -52,26 +50,39 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.my_recycler_view);
-        tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
-        // получаем разрешения
+        contactsList = new ArrayList<>();
+        initViews(view);
+
+        //получаем разрешения
         int hasReadContactPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS);
-        // если устройство до API 23, устанавливаем разрешение
         if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            READ_CONTACTS_GRANTED = true;
+            queryContentProvider();
         } else {
             // вызываем диалоговое окно для установки разрешений
-            ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    REQUEST_CODE_READ_CONTACTS);
+            Log.i("ContactListFragment", "RequestPermission");
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
         }
-        // если разрешение установлено, загружаем контакты
-        if (READ_CONTACTS_GRANTED) {
-            ContactsAsyncTask contactsAsyncTask = new ContactsAsyncTask(this);
-            contactsAsyncTask.execute(requireContext());
-        } else {
-            tvContactListFragmentTitle.setText(requireContext().getString(R.string.no_permission));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.i("ContactListFragment", "onRequestPermissionsResult");
+        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                queryContentProvider();
+            } else {
+                tvContactListFragmentTitle.setText(getString(R.string.no_permission));
+            }
         }
+    }
+
+    private void initViews(@NonNull View view) {
+        tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
+        RecyclerView recyclerView = view.findViewById(R.id.my_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        contactsAdapter = new ContactsAdapter(requireContext(), contactsList);
+        contactsAdapter.setItemClickListener(this);
+        recyclerView.setAdapter(contactsAdapter);
     }
 
     //Размещение фрагмента во фрейм
@@ -82,20 +93,21 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
                 .commit();
     }
 
+    //запрос в ContentProvider в отдельном потоке
+    private void queryContentProvider() {
+        ContactsAsyncTask contactsAsyncTask = new ContactsAsyncTask(this);
+        contactsAsyncTask.execute(requireContext());
+    }
+
     //Окончание запроса в AsyncTask
     @Override
     public void loadList(List<Contact> contacts) {
-        tvContactListFragmentTitle.setText(requireContext().getString(R.string.contactListFragment_title));
-        Log.i("TAG", "Конец AsyncTask");
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        ContactsAdapter contactsAdapter = new ContactsAdapter(requireContext(), contacts);
-        contactsAdapter.setItemClickListener(this);
-        recyclerView.setAdapter(contactsAdapter);
+        tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
+        contactsAdapter.setContacts(contacts);
     }
 
     @Override
-    public void onClick(View view, String id) {
+    public void onClick(String id) {
         loadFragment(DetailFragment.newInstance(id));
     }
 }

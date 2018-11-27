@@ -1,10 +1,14 @@
 package com.example.semen.contactslist;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +23,10 @@ import com.example.semen.contactslist.service.DetailAsyncTask;
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment implements AsyncResponseDetailFragment {
-    TextView tvName;
-    TextView tvPhoneNumber;
-    Contact contact = null;
+    private TextView tvName;
+    private TextView tvPhoneNumber;
+    private String contactId;
+    private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -45,13 +50,37 @@ public class DetailFragment extends Fragment implements AsyncResponseDetailFragm
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        String contactId = bundle.getString("_id", "Empty");
-
-        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId, this);
-        detailAsyncTask.execute(requireContext());
+        contactId = bundle.getString("_id", "Empty");
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
+
+        int hasReadContactPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS);
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            queryContentProvider();
+        } else {
+            // вызываем диалоговое окно для установки разрешений
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                queryContentProvider();
+            } else {
+                Log.i("ContactListFragment", "onRequestPermissionsResult");
+                tvName.setText(getString(R.string.no_permission));
+                tvPhoneNumber.setText(getString(R.string.no_permission));
+            }
+        }
+    }
+
+    //запрос в ContentProvider в отдельном потоке
+    private void queryContentProvider() {
+        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId, this);
+        detailAsyncTask.execute(requireContext());
     }
 
     @Override
