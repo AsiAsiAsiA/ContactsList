@@ -18,18 +18,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     private ItemClickListener itemClickListener;
     private final List<Contact> contacts;
 
+    public ContactsAdapter(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
     //Устанавлиет новый список и обновляет recyclerview
     public void setContacts(List<Contact> contacts) {
         this.contacts.clear();
         this.contacts.addAll(contacts);
         notifyDataSetChanged();
-    }
-
-    private final Context context;
-
-    public ContactsAdapter(Context context, List<Contact> contacts) {
-        this.contacts = contacts;
-        this.context = context;
     }
 
     @NonNull
@@ -41,7 +38,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, final int position) {
-        holder.bind(contacts.get(position), context);
+        holder.bind(contacts.get(position));
+        holder.itemView.getContext();
     }
 
     @Override
@@ -53,21 +51,23 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.itemClickListener = itemClickListener;
     }
 
-    public interface ItemClickListener{
+    public interface ItemClickListener {
         void onClick(String id);
     }
 
     class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name;
+        Context context;
 
         ContactsViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.contactInfo);
+            context = name.getContext();
             itemView.setTag(itemView);
             itemView.setOnClickListener(this);
         }
 
-        void bind(final Contact contact,  Context context) {
+        void bind(final Contact contact) {
             name.setText(String.format("%s %s %s %s",
                     context.getString(R.string.id),
                     contact.getId(),

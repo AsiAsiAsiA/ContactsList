@@ -15,24 +15,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.AsyncResponseDetailFragment;
+import com.example.semen.contactslist.service.AsyncResponseDetail;
 import com.example.semen.contactslist.service.DetailAsyncTask;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment implements AsyncResponseDetailFragment {
+public class DetailFragment extends Fragment implements AsyncResponseDetail {
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
+    private static final String _ID = "_id";
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
 
         DetailFragment fragment = new DetailFragment();
-        args.putString("_id", id);
+        args.putString(_ID, id);
         fragment.setArguments(args);
 
         return fragment;
@@ -50,7 +51,7 @@ public class DetailFragment extends Fragment implements AsyncResponseDetailFragm
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        contactId = bundle.getString("_id", "Empty");
+        contactId = bundle.getString(_ID, "Empty");
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);

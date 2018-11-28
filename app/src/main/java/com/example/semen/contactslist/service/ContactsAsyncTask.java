@@ -9,21 +9,21 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
-    private final WeakReference<AsyncResponseContactListFragment> delegate;
+    private final WeakReference<AsyncResponseContactList> delegate;
 
-    public ContactsAsyncTask(AsyncResponseContactListFragment asyncResponseContactListFragment) {
-        delegate = new WeakReference<>(asyncResponseContactListFragment);
+    public ContactsAsyncTask(AsyncResponseContactList asyncResponseContactList) {
+        delegate = new WeakReference<>(asyncResponseContactList);
     }
 
     @Override
     protected List<Contact> doInBackground(Context... contexts) {
-        return ContactsContentResolver.getContacts(contexts[0]);
+        return ContactsManager.getContacts(contexts[0]);
     }
 
     @Override
     protected void onPostExecute(List<Contact> contacts) {
         super.onPostExecute(contacts);
-        AsyncResponseContactListFragment  callback = delegate.get();
+        AsyncResponseContactList callback = delegate.get();
         if (callback != null) {
             callback.loadList(contacts);
         }

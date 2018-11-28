@@ -4,6 +4,6 @@ import com.example.semen.contactslist.model.Contact;
 
 import java.util.List;
 
-public interface AsyncResponseContactListFragment {
+public interface AsyncResponseContactList {
     void loadList(List<Contact> contacts);
 }

@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">ContactsList</string>
-    <string name="contactListFragment_title">ContactsListFragment</string>
-    <string name="detailFragment_title">Contact Detail</string>
 
-    <string name="reading_from_database">Reading from Database...</string>
+    <string name="app_name">ContactsList</string>
     <string name="name">Name:</string>
     <string name="id">ID:</string>
-    <string name="phone_number">Phone Number:</string>
     <string name="no_permission">NO PERMISSION</string>
+
+    <string name="contactListFragment_title">ContactsListFragment</string>
+    <string name="reading_from_database">Reading from Database</string>
+
+    <string name="detailFragment_title">Contact Detail</string>
+    <string name="phone_number">Phone Number:</string>
+
 </resources>

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.AsyncResponseContactListFragment;
+import com.example.semen.contactslist.service.AsyncResponseContactList;
 import com.example.semen.contactslist.service.ContactsAsyncTask;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactListFragment extends Fragment implements AsyncResponseContactListFragment, ContactsAdapter.ItemClickListener {
+public class ContactListFragment extends Fragment implements AsyncResponseContactList, ContactsAdapter.ItemClickListener {
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
@@ -80,7 +80,7 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
         tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
         RecyclerView recyclerView = view.findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        contactsAdapter = new ContactsAdapter(requireContext(), contactsList);
+        contactsAdapter = new ContactsAdapter(contactsList);
         contactsAdapter.setItemClickListener(this);
         recyclerView.setAdapter(contactsAdapter);
     }

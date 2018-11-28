@@ -11,8 +11,8 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-class ContactsContentResolver {
-    private static final String TAG = "ContactsContentResolver";
+class ContactsManager {
+    private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
    static List<Contact> getContacts(Context context) {
