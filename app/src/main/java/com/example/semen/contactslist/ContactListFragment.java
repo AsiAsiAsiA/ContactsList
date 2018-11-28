@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,6 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contact_list, container, false);
     }
 
@@ -59,14 +57,12 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
             queryContentProvider();
         } else {
             // вызываем диалоговое окно для установки разрешений
-            Log.i("ContactListFragment", "RequestPermission");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i("ContactListFragment", "onRequestPermissionsResult");
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
@@ -102,8 +98,10 @@ public class ContactListFragment extends Fragment implements AsyncResponseContac
     //Окончание запроса в AsyncTask
     @Override
     public void loadList(List<Contact> contacts) {
-        tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
-        contactsAdapter.setContacts(contacts);
+        if (isResumed()) {
+            tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
+            contactsAdapter.setContacts(contacts);
+        }
     }
 
     @Override

@@ -15,7 +15,7 @@ class ContactsManager {
     private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
-   static List<Contact> getContacts(Context context) {
+    static List<Contact> getContacts(Context context) {
         List<Contact> contactArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();

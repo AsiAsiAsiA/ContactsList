@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
     private String contactId;
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
     private static final String _ID = "_id";
+    private static final String EMPTY = "Empty";
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -51,7 +51,7 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        contactId = bundle.getString(_ID, "Empty");
+        contactId = bundle.getString(_ID, EMPTY);
 
         tvName = view.findViewById(R.id.tvName);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
@@ -71,7 +71,6 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
             } else {
-                Log.i("ContactListFragment", "onRequestPermissionsResult");
                 tvName.setText(getString(R.string.no_permission));
                 tvPhoneNumber.setText(getString(R.string.no_permission));
             }
@@ -86,7 +85,13 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
 
     @Override
     public void loadContactFromContentProvider(Contact contact) {
-        tvName.setText(getString(R.string.detailFragment_text, getString(R.string.id), contact.getName()));
-        tvPhoneNumber.setText(getString(R.string.detailFragment_text, getString(R.string.phone_number), contact.getPhoneNumbers().toString()));
+        if (isResumed()) {
+            tvName.setText(getString(R.string.detailFragment_text,
+                    getString(R.string.id),
+                    contact.getName()));
+            tvPhoneNumber.setText(getString(R.string.detailFragment_text,
+                    getString(R.string.phone_number),
+                    contact.getPhoneNumbers().toString()));
+        }
     }
 }
