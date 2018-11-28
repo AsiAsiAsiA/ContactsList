@@ -86,7 +86,7 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
 
     @Override
     public void loadContactFromContentProvider(Contact contact) {
-        tvName.setText(String.format("%s %s", getString(R.string.id), contact.getName()));
-        tvPhoneNumber.setText(String.format("%s %s", getString(R.string.phone_number), contact.getPhoneNumbers().toString()));
+        tvName.setText(getString(R.string.detailFragment_text, getString(R.string.id), contact.getName()));
+        tvPhoneNumber.setText(getString(R.string.detailFragment_text, getString(R.string.phone_number), contact.getPhoneNumbers().toString()));
     }
 }

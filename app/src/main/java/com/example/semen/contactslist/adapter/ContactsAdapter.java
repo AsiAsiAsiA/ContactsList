@@ -57,7 +57,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name;
-        Context context;
+        final Context context;
 
         ContactsViewHolder(View itemView) {
             super(itemView);
@@ -68,7 +68,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         }
 
         void bind(final Contact contact) {
-            name.setText(String.format("%s %s %s %s",
+            name.setText(context.getString(R.string.view_holder_text,
                     context.getString(R.string.id),
                     contact.getId(),
                     context.getString(R.string.name),
@@ -78,7 +78,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            itemClickListener.onClick(contacts.get(position).getId());
+            if (position != RecyclerView.NO_POSITION) {
+                itemClickListener.onClick(contacts.get(position).getId());
+            }
         }
     }
 }
