@@ -1,14 +1,16 @@
 <resources>
+
     <string name="app_name">ContactsList</string>
+    <string name="name">Name:</string>
+    <string name="id">ID:</string>
+    <string name="no_permission">NO PERMISSION</string>
 
     <string name="contactListFragment_title">ContactsListFragment</string>
-    <string name="button_move_to_DetailFragment">Move to DetailFragment</string>
-    <string name="detailFragment_title">Move to DetailFragment</string>
-    <string name="second_textview">DetailFragment</string>
-    <string name="message">Message From ContactListFragment: </string>
-    <string name="no_text">Default Text</string>
-    <string name="contact_detail">Contact Detail</string>
-    <string name="name">Name: </string>
-    <string name="phone_number">Phone Number :</string>
+    <string name="reading_from_database">Reading from Database</string>
+    <string name="view_holder_text">%s %s %s %s</string>
+
+    <string name="detailFragment_title">Contact Detail</string>
+    <string name="phone_number">Phone Number:</string>
+    <string name="detailFragment_text">%s %s</string>
 
 </resources>
