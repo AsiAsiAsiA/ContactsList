@@ -3,9 +3,10 @@ package com.example.semen.contactslist;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import com.arellomobile.mvp.MvpAppCompatActivity;
+
+public class MainActivity extends MvpAppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

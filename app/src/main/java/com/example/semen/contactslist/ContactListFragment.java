@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.AsyncResponseContactList;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactListFragment extends Fragment implements AsyncResponseContactList, ContactsAdapter.ItemClickListener {
+public class ContactListFragment extends MvpAppCompatFragment implements AsyncResponseContactList, ContactsAdapter.ItemClickListener {
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;

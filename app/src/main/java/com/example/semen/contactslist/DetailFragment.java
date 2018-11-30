@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.AsyncResponseDetail;
 import com.example.semen.contactslist.service.DetailAsyncTask;
@@ -21,7 +22,7 @@ import com.example.semen.contactslist.service.DetailAsyncTask;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment implements AsyncResponseDetail {
+public class DetailFragment extends MvpAppCompatFragment implements AsyncResponseDetail {
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
