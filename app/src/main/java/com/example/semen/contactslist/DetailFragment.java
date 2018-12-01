@@ -14,21 +14,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.AsyncResponseDetail;
-import com.example.semen.contactslist.service.DetailAsyncTask;
+import com.example.semen.contactslist.presenter.DetailPresenter;
+import com.example.semen.contactslist.view.DetailView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends MvpAppCompatFragment implements AsyncResponseDetail {
+public class DetailFragment extends MvpAppCompatFragment implements DetailView {
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
     private static final String _ID = "_id";
     private static final String EMPTY = "Empty";
+
+    @InjectPresenter
+    DetailPresenter detailPresenter;
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -67,6 +71,13 @@ public class DetailFragment extends MvpAppCompatFragment implements AsyncRespons
     }
 
     @Override
+    public void onDestroyView() {
+        tvName = null;
+        tvPhoneNumber = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -80,8 +91,7 @@ public class DetailFragment extends MvpAppCompatFragment implements AsyncRespons
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId, this);
-        detailAsyncTask.execute(requireContext());
+        detailPresenter.loadContact(contactId, requireContext());
     }
 
     @Override

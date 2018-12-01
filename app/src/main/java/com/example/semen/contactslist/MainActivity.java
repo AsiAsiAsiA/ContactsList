@@ -21,7 +21,7 @@ public class MainActivity extends MvpAppCompatActivity {
     //Размещение фрагмента во фрейм
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, new ContactListFragment())
                 .commit();
     }
 }

@@ -33,6 +33,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
+    private RecyclerView recyclerView;
 
     @InjectPresenter
     ContactsListPresenter contactsListPresenter;
@@ -67,6 +68,15 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
+    public void onDestroyView() {
+        tvContactListFragmentTitle = null;
+        contactsAdapter = null;
+        contactsList = null;
+        recyclerView = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -79,7 +89,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     private void initViews(@NonNull View view) {
         tvContactListFragmentTitle = view.findViewById(R.id.contactListFragment_title);
-        RecyclerView recyclerView = view.findViewById(R.id.my_recycler_view);
+        recyclerView = view.findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         contactsAdapter = new ContactsAdapter(contactsList);
         contactsAdapter.setItemClickListener(this);
@@ -111,6 +121,4 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void onClick(String id) {
         loadFragment(DetailFragment.newInstance(id));
     }
-
-
 }
