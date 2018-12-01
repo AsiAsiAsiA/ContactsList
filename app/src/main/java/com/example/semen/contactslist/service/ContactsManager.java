@@ -11,11 +11,11 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-class ContactsManager {
+public class ContactsManager {
     private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
-    static List<Contact> getContacts(Context context) {
+    public static List<Contact> getContacts(Context context) {
         List<Contact> contactArrayList = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -42,7 +42,7 @@ class ContactsManager {
     }
 
     //Получение контакта по ID
-    static Contact findContactById(String id, Context context) {
+    public static Contact findContactById(String id, Context context) {
         Contact contact = null;
         ContentResolver contentResolver = context.getContentResolver();
         try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,

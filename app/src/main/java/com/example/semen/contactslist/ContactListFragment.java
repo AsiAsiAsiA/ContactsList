@@ -16,10 +16,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.AsyncResponseContactList;
-import com.example.semen.contactslist.service.ContactsAsyncTask;
+import com.example.semen.contactslist.presenter.ContactsListPresenter;
+import com.example.semen.contactslist.view.ContactListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,13 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactListFragment extends MvpAppCompatFragment implements AsyncResponseContactList, ContactsAdapter.ItemClickListener {
+public class ContactListFragment extends MvpAppCompatFragment implements ContactsAdapter.ItemClickListener, ContactListView {
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
+
+    @InjectPresenter
+    ContactsListPresenter contactsListPresenter;
 
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
@@ -92,11 +96,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements AsyncRe
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        ContactsAsyncTask contactsAsyncTask = new ContactsAsyncTask(this);
-        contactsAsyncTask.execute(requireContext());
+        contactsListPresenter.getContactList(requireContext());
     }
 
-    //Окончание запроса в AsyncTask
     @Override
     public void loadList(List<Contact> contacts) {
         if (isResumed()) {
@@ -109,4 +111,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements AsyncRe
     public void onClick(String id) {
         loadFragment(DetailFragment.newInstance(id));
     }
+
+
 }
