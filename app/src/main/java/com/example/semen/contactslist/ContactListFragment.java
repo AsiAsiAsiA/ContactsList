@@ -82,7 +82,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
             } else {
-                tvContactListFragmentTitle.setText(getString(R.string.no_permission));
+                contactsListPresenter.noPermissions();
             }
         }
     }
@@ -115,6 +115,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
             contactsAdapter.setContacts(contacts);
         }
+    }
+
+    @Override
+    public void startLoading() {
+        tvContactListFragmentTitle.setText(R.string.reading_from_database);
+    }
+
+    @Override
+    public void noPermissions() {
+        tvContactListFragmentTitle.setText(getString(R.string.no_permission));
     }
 
     @Override

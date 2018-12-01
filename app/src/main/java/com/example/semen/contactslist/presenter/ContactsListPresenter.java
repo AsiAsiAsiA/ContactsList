@@ -17,7 +17,15 @@ public class ContactsListPresenter extends MvpPresenter<ContactListView> {
         new ContactsAsyncTask().execute(context);
     }
 
+    public void noPermissions(){
+        getViewState().noPermissions();
+    }
+
     public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
+        @Override
+        protected void onPreExecute() {
+            getViewState().startLoading();
+        }
 
         @Override
         protected List<Contact> doInBackground(Context... contexts) {
