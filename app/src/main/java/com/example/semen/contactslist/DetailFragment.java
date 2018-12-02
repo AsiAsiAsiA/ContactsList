@@ -96,13 +96,11 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailView {
 
     @Override
     public void loadContactFromContentProvider(Contact contact) {
-        if (isResumed()) {
-            tvName.setText(getString(R.string.detailFragment_text,
-                    getString(R.string.id),
-                    contact.getName()));
-            tvPhoneNumber.setText(getString(R.string.detailFragment_text,
-                    getString(R.string.phone_number),
-                    contact.getPhoneNumbers().toString()));
-        }
+        tvName.setText(getString(R.string.detailFragment_text,
+                getString(R.string.id),
+                contact.getName()));
+        tvPhoneNumber.setText(getString(R.string.detailFragment_text,
+                getString(R.string.phone_number),
+                contact.getPhoneNumbers().toString()));
     }
 }

@@ -111,10 +111,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void loadList(List<Contact> contacts) {
-        if (isResumed()) {
-            tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
-            contactsAdapter.setContacts(contacts);
-        }
+        tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
+        contactsAdapter.setContacts(contacts);
     }
 
     @Override
