@@ -18,7 +18,7 @@ public class DetailPresenter extends MvpPresenter<DetailView> {
         new DetailAsyncTask().execute(context);
     }
 
-    public class DetailAsyncTask extends AsyncTask<Context, Void, Contact> {
+    class DetailAsyncTask extends AsyncTask<Context, Void, Contact> {
         @Override
         protected Contact doInBackground(Context... contexts) {
             return ContactsManager.findContactById(id, contexts[0]);

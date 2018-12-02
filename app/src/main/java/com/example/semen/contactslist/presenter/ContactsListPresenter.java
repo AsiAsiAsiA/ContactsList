@@ -21,7 +21,7 @@ public class ContactsListPresenter extends MvpPresenter<ContactListView> {
         getViewState().noPermissions();
     }
 
-    public class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
+    class ContactsAsyncTask extends AsyncTask<Context, Void, List<Contact>> {
         @Override
         protected void onPreExecute() {
             getViewState().startLoading();
