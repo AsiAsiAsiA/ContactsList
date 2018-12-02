@@ -22,7 +22,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         this.contacts = contacts;
     }
 
-    //Устанавлиет новый список и обновляет recyclerview
+    //Устанавлиет новый список и обновляет RecyclerView
     public void setContacts(List<Contact> contacts) {
         this.contacts.clear();
         this.contacts.addAll(contacts);

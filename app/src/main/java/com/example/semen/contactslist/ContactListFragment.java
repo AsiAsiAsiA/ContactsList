@@ -14,13 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.presenter.ContactsListPresenter;
-import com.example.semen.contactslist.view.ContactListView;
+import com.example.semen.contactslist.presenter.ContactsListFragmentPresenter;
+import com.example.semen.contactslist.view.ContactListFragmentView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,14 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactListFragment extends MvpAppCompatFragment implements ContactsAdapter.ItemClickListener, ContactListView {
+public class ContactListFragment extends MvpAppCompatFragment implements ContactsAdapter.ItemClickListener, ContactListFragmentView {
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
     private RecyclerView recyclerView;
 
     @InjectPresenter
-    ContactsListPresenter contactsListPresenter;
+    ContactsListFragmentPresenter contactsListFragmentPresenter;
 
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
@@ -82,7 +83,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
             } else {
-                contactsListPresenter.noPermissions();
+                contactsListFragmentPresenter.noPermissions();
             }
         }
     }
@@ -106,7 +107,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        contactsListPresenter.getContactList(requireContext());
+        contactsListFragmentPresenter.getContactList();
     }
 
     @Override
@@ -121,7 +122,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void noPermissions() {
+    public void finishLoading() {
+        Toast.makeText(requireContext(),R.string.contact_list_updated,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showPermissionsNotGranted() {
         tvContactListFragmentTitle.setText(getString(R.string.no_permission));
     }
 

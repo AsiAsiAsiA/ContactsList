@@ -16,14 +16,14 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.presenter.DetailPresenter;
-import com.example.semen.contactslist.view.DetailView;
+import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
+import com.example.semen.contactslist.view.DetailFragmentView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends MvpAppCompatFragment implements DetailView {
+public class DetailFragment extends MvpAppCompatFragment implements DetailFragmentView {
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
@@ -32,7 +32,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailView {
     private static final String EMPTY = "Empty";
 
     @InjectPresenter
-    DetailPresenter detailPresenter;
+    DetailFragmentPresenter detailFragmentPresenter;
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -83,15 +83,14 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailView {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
             } else {
-                tvName.setText(getString(R.string.no_permission));
-                tvPhoneNumber.setText(getString(R.string.no_permission));
+                showPermissionsNotGranted();
             }
         }
     }
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        detailPresenter.loadContact(contactId, requireContext());
+        detailFragmentPresenter.loadContact(contactId);
     }
 
     @Override
@@ -102,5 +101,11 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailView {
         tvPhoneNumber.setText(getString(R.string.detailFragment_text,
                 getString(R.string.phone_number),
                 contact.getPhoneNumbers().toString()));
+    }
+
+    @Override
+    public void showPermissionsNotGranted() {
+        tvName.setText(getString(R.string.no_permission));
+        tvPhoneNumber.setText(getString(R.string.no_permission));
     }
 }

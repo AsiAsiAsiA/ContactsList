@@ -7,6 +7,7 @@
 
     <string name="contactListFragment_title">ContactsListFragment</string>
     <string name="reading_from_database">Reading from Database</string>
+    <string name="contact_list_updated">Contact list updated</string>
     <string name="view_holder_text">%s %s %s %s</string>
 
     <string name="detailFragment_title">Contact Detail</string>
