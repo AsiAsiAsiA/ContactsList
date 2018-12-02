@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.semen.contactslist.app.App;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.ContactsManager;
 import com.example.semen.contactslist.view.ContactListFragmentView;
@@ -41,7 +40,7 @@ public class ContactsListFragmentPresenter extends MvpPresenter<ContactListFragm
 
         @Override
         protected List<Contact> doInBackground(Void... voids) {
-            return ContactsManager.getContacts(App.getContext());
+            return ContactsManager.getContacts();
         }
 
         @Override
