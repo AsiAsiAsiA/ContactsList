@@ -95,17 +95,22 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
 
     @Override
     public void loadContactFromContentProvider(Contact contact) {
-        tvName.setText(getString(R.string.detailFragment_text,
-                getString(R.string.id),
-                contact.getName()));
-        tvPhoneNumber.setText(getString(R.string.detailFragment_text,
-                getString(R.string.phone_number),
-                contact.getPhoneNumbers().toString()));
+        if (contact != null) {
+            tvName.setText(getString(R.string.detailFragment_text,
+                    getString(R.string.id),
+                    contact.getName()));
+            tvPhoneNumber.setText(getString(R.string.detailFragment_text,
+                    getString(R.string.phone_number),
+                    contact.getPhoneNumbers().toString()));
+        } else {
+            tvName.setText(getString(R.string.data_is_not_available));
+            tvPhoneNumber.setText(getString(R.string.data_is_not_available));
+        }
     }
 
     @Override
     public void showPermissionsNotGranted() {
-        tvName.setText(getString(R.string.no_permission));
-        tvPhoneNumber.setText(getString(R.string.no_permission));
+        tvName.setText(getString(R.string.data_is_not_available));
+        tvPhoneNumber.setText(getString(R.string.data_is_not_available));
     }
 }

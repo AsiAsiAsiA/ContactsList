@@ -112,8 +112,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void loadList(List<Contact> contacts) {
-        tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
-        contactsAdapter.setContacts(contacts);
+        if (contacts!=null){
+            tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
+            contactsAdapter.setContacts(contacts);
+        } else {
+            tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+        }
     }
 
     @Override
@@ -128,7 +132,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void showPermissionsNotGranted() {
-        tvContactListFragmentTitle.setText(getString(R.string.no_permission));
+        tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
     }
 
     @Override

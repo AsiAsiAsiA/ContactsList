@@ -22,7 +22,7 @@ public class DetailFragmentPresenter extends MvpPresenter<DetailFragmentView> {
 
     @Override
     public void onDestroy() {
-        if (detailAsyncTask != null){
+        if (detailAsyncTask != null) {
             detailAsyncTask.cancel(true);
             detailAsyncTask = null;
         }
@@ -32,7 +32,10 @@ public class DetailFragmentPresenter extends MvpPresenter<DetailFragmentView> {
     class DetailAsyncTask extends AsyncTask<Void, Void, Contact> {
         @Override
         protected Contact doInBackground(Void... voids) {
-            return ContactsManager.findContactById(id);
+            if (!isCancelled()) {
+                return ContactsManager.findContactById(id);
+            }
+            return null;
         }
 
         @Override

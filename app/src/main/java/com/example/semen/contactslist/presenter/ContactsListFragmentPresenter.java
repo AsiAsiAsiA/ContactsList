@@ -21,26 +21,31 @@ public class ContactsListFragmentPresenter extends MvpPresenter<ContactListFragm
 
     @Override
     public void onDestroy() {
-         if (contactsAsyncTask != null){
-             contactsAsyncTask.cancel(true);
-             contactsAsyncTask = null;
-         }
+        if (contactsAsyncTask != null) {
+            contactsAsyncTask.cancel(true);
+            contactsAsyncTask = null;
+        }
         super.onDestroy();
     }
 
-    public void noPermissions(){
+    public void noPermissions() {
         getViewState().showPermissionsNotGranted();
     }
 
     class ContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
         @Override
         protected void onPreExecute() {
-            getViewState().startLoading();
+            if (!isCancelled()) {
+                getViewState().startLoading();
+            }
         }
 
         @Override
         protected List<Contact> doInBackground(Void... voids) {
-            return ContactsManager.getContacts();
+            if (!isCancelled()) {
+                return ContactsManager.getContacts();
+            }
+            return null;
         }
 
         @Override
