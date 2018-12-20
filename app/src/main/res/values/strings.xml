@@ -3,8 +3,8 @@
     <string name="app_name">ContactsList</string>
     <string name="name">Name:</string>
     <string name="id">ID:</string>
-    <string name="data_is_not_available">Data is not available</string>
-    <string name="not_found_contact_exception">Contact not found</string>
+    <string name="no_permission">NO PERMISSION</string>
+    <string name="searchview_title">Search</string>
 
     <string name="contactListFragment_title">ContactsListFragment</string>
     <string name="reading_from_database">Reading from Database</string>

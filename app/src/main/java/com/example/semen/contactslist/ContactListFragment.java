@@ -71,7 +71,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         //получаем разрешения
         int hasReadContactPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS);
         if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            queryContentProvider();
+            queryContentProvider(null);
         } else {
             // вызываем диалоговое окно для установки разрешений
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
@@ -99,12 +99,18 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         MenuItem searchItem = menu.findItem(R.id.menuSearch);
         searchView = (SearchView) searchItem.getActionView();
 
+        if (searchString != null) {
+            searchView.setIconified(false);
+            searchView.setQuery(searchString, true);
+            queryContentProvider(searchString);
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             //реагирует на отправление текста
             @Override
             public boolean onQueryTextSubmit(String newText) {
                 Log.i("onQueryTextSubmit", newText);
-                search(contactsList, newText);
+                queryContentProvider(newText);
                 return true;
             }
 
@@ -112,7 +118,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             @Override
             public boolean onQueryTextChange(String query) {
                 Log.i("onQueryTextChange", query);
-                search(contactsList, query);
+                queryContentProvider(query);
                 return true;
             }
         });
@@ -122,7 +128,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                queryContentProvider();
+                queryContentProvider(null);
             } else {
                 contactsListFragmentPresenter.noPermissions();
             }
@@ -137,7 +143,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactsAdapter.setItemClickListener(this);
         recyclerView.setAdapter(contactsAdapter);
         recyclerView.addItemDecoration(new ContactListItemDecorator(30));
-
     }
 
     //Размещение фрагмента во фрейм
@@ -169,19 +174,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         }
     }
 
-    private void search(List<Contact> contacts, String query) {
-        String userInput = query.toLowerCase();
-
-        List<Contact> newList = new ArrayList<>();
-
-        for (Contact contact : contacts) {
-            if (contact.getName().toLowerCase().contains(userInput)) {
-                newList.add(contact);
-            }
-        }
-        contactsAdapter.setContacts(newList);
-    }
-
     @Override
     public void startLoading() {
         tvContactListFragmentTitle.setText(R.string.reading_from_database);
@@ -203,7 +195,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_KEY, searchView.getQuery().toString());
     }

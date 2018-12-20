@@ -6,7 +6,7 @@ import com.example.semen.contactslist.model.Contact;
 
 import java.util.List;
 
-public class ContactListDiffUtilCallback extends DiffUtil.Callback {
+class ContactListDiffUtilCallback extends DiffUtil.Callback {
     private final List<Contact> newList;
     private final List<Contact> oldList;
 
@@ -27,7 +27,7 @@ public class ContactListDiffUtilCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return newList.get(newItemPosition).getId() == oldList.get(oldItemPosition).getId();
+        return newList.get(newItemPosition).getId().equals(oldList.get(oldItemPosition).getId());
     }
 
     @Override
