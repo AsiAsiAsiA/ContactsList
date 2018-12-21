@@ -9,20 +9,18 @@ import android.view.View;
 
 public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
     private final Paint paint;
-    private final int offset;
-    private final int halfOffset;
+    private static final int OFFSET = 30;
+    private static final int HALF_OFFSET = OFFSET / 2;
 
-    public ContactListItemDecorator(int offset) {
+    public ContactListItemDecorator() {
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
-        this.offset = offset;
-        this.halfOffset = offset / 2;
     }
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        outRect.set(offset, offset, offset, offset);
+        outRect.set(OFFSET, OFFSET, OFFSET, OFFSET);
     }
 
     @Override
@@ -31,10 +29,10 @@ public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
             final View view = parent.getChildAt(i);
 
             //Draw rectangle
-            c.drawRect(view.getLeft() - halfOffset,
-                    view.getTop() - halfOffset,
-                    view.getRight() + halfOffset,
-                    view.getBottom() + halfOffset,
+            c.drawRect(view.getLeft() - HALF_OFFSET,
+                    view.getTop() - HALF_OFFSET,
+                    view.getRight() + HALF_OFFSET,
+                    view.getBottom() + HALF_OFFSET,
                     paint);
         }
     }

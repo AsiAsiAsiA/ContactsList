@@ -142,7 +142,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactsAdapter = new ContactsAdapter(contactsList);
         contactsAdapter.setItemClickListener(this);
         recyclerView.setAdapter(contactsAdapter);
-        recyclerView.addItemDecoration(new ContactListItemDecorator(30));
+        recyclerView.addItemDecoration(new ContactListItemDecorator());
     }
 
     //Размещение фрагмента во фрейм
