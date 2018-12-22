@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="@dimen/title_text_size"
-        android:text="@string/reading_from_database" />
+        android:text="@string/contactListFragment_title" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"

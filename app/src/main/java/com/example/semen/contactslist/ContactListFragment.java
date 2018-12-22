@@ -22,9 +22,15 @@ import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.presenter.ContactsListFragmentPresenter;
 import com.example.semen.contactslist.view.ContactListFragmentView;
+import com.example.semen.contactslist.service.ContactsManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -34,6 +40,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
+    private Disposable disposableContactListFragment;
     private RecyclerView recyclerView;
 
     @InjectPresenter
@@ -78,6 +85,15 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
+        tvContactListFragmentTitle = null;
+        if (disposableContactListFragment != null) {
+            disposableContactListFragment.dispose();
+        }
+
+    @Override
+        super.onDestroyView();
+    }
+    public void onDestroyView() {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -105,8 +121,14 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 .commit();
     }
 
-    //запрос в ContentProvider в отдельном потоке
+    //запрос в ContentProvider в отдельном потоке RxJava
     private void queryContentProvider() {
+        disposableContactListFragment = Single.fromCallable(() -> ContactsManager.getContacts(requireContext()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(__ -> tvContactListFragmentTitle.setText(getString(R.string.reading_from_database)))
+                .doAfterTerminate(() -> Toast.makeText(requireContext(), getString(R.string.contact_list_updated), Toast.LENGTH_SHORT).show())
+                .subscribe(this::loadList);
         contactsListFragmentPresenter.getContactList();
     }
 
