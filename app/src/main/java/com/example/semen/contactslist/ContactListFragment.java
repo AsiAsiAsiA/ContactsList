@@ -171,6 +171,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 searchView.setIconified(false);
                 searchView.setQuery(searchString, true);
             }
+            contactsAdapter.updateContacts(contacts);
         }
     }
 

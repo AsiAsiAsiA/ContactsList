@@ -1,5 +1,6 @@
 package com.example.semen.contactslist.adapter;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -7,20 +8,26 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.example.semen.contactslist.R;
+import com.example.semen.contactslist.app.App;
+
 public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
     private final Paint paint;
-    private static final int OFFSET = 30;
-    private static final int HALF_OFFSET = OFFSET / 2;
+    private final int offset;
+    private final int halfOffset;
 
     public ContactListItemDecorator() {
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
+        Resources r = App.getContext().getResources();
+        paint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.stroke_width));
+        offset = r.getDimensionPixelSize(R.dimen.offset);
+        halfOffset = offset / 2;
     }
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        outRect.set(OFFSET, OFFSET, OFFSET, OFFSET);
+        outRect.set(offset, offset, offset, offset);
     }
 
     @Override
@@ -29,10 +36,10 @@ public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
             final View view = parent.getChildAt(i);
 
             //Draw rectangle
-            c.drawRect(view.getLeft() - HALF_OFFSET,
-                    view.getTop() - HALF_OFFSET,
-                    view.getRight() + HALF_OFFSET,
-                    view.getBottom() + HALF_OFFSET,
+            c.drawRect(view.getLeft() - halfOffset,
+                    view.getTop() - halfOffset,
+                    view.getRight() + halfOffset,
+                    view.getBottom() + halfOffset,
                     paint);
         }
     }

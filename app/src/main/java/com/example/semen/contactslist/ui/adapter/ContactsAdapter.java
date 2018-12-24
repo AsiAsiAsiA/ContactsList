@@ -14,20 +14,34 @@ import com.example.semen.contactslist.domain.Contact;
 
 import java.util.List;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
 
     private ItemClickListener itemClickListener;
     private List<Contact> contacts;
+    private Disposable disposable;
 
     public ContactsAdapter(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
-    //Устанавлиет новый список и обновляет RecyclerView
-    public void setContacts(List<Contact> contacts) {
-        final ContactListDiffUtilCallback diffUtilCallback = new ContactListDiffUtilCallback(contacts, this.contacts);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
-        diffResult.dispatchUpdatesTo(this);
+    //Устанавлиет новый список и обновляет RecyclerView с помощью DiffUtil
+    public void updateContacts(List<Contact> contacts) {
+        disposable = Single.fromCallable(() ->
+                DiffUtil.calculateDiff(new ContactListDiffUtilCallback(contacts, this.contacts)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(diffResult -> {
+                    setContacts(contacts);
+                    diffResult.dispatchUpdatesTo(this);
+                });
+    }
+
+    private void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
@@ -47,6 +61,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public int getItemCount() {
         return contacts.size();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ContactsViewHolder holder) {
+        disposable.dispose();
+        super.onViewDetachedFromWindow(holder);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
