@@ -27,7 +27,6 @@ import com.example.semen.contactslist.service.ContactsManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -123,7 +122,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     //запрос в ContentProvider в отдельном потоке RxJava
     private void queryContentProvider() {
-        disposableContactListFragment = Single.fromCallable(() -> ContactsManager.getContacts(requireContext()))
+        if (disposableContactListFragment != null && !disposableContactListFragment.isDisposed()) {
+            disposableContactListFragment.dispose();
+        }
+        disposableContactListFragment = ContactsManager.getContacts(requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(__ -> tvContactListFragmentTitle.setText(getString(R.string.reading_from_database)))

@@ -20,7 +20,6 @@ import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
 import com.example.semen.contactslist.view.DetailFragmentView;
 import com.example.semen.contactslist.service.ContactsManager;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -105,8 +104,10 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        detailFragmentPresenter.loadContact(contactId);
-        disposableDetailFragment = Single.fromCallable(() -> ContactsManager.findContactById(contactId, requireContext()))
+        if (disposableDetailFragment != null && !disposableDetailFragment.isDisposed()) {
+            disposableDetailFragment.dispose();
+        }
+        disposableDetailFragment = ContactsManager.findContactById(contactId, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadContactFromContentProvider);
