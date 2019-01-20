@@ -32,7 +32,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
-    private Disposable disposableDetailFragment;
+    private Disposable disposable;
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
     private static final String _ID = "_id";
     private static final String EMPTY = "Empty";
@@ -96,18 +96,18 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
         tvName = null;
         tvPhoneNumber = null;
         contactId = null;
-        if (disposableDetailFragment != null) {
-            disposableDetailFragment.dispose();
+        if (disposable != null) {
+            disposable.dispose();
         }
         super.onDestroyView();
     }
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        if (disposableDetailFragment != null && !disposableDetailFragment.isDisposed()) {
-            disposableDetailFragment.dispose();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
         }
-        disposableDetailFragment = ContactsManager.findContactById(contactId, requireContext())
+        disposable = ContactsManager.findContactById(contactId, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadContactFromContentProvider);
