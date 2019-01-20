@@ -65,7 +65,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onViewDetachedFromWindow(@NonNull ContactsViewHolder holder) {
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
         super.onViewDetachedFromWindow(holder);
     }
 

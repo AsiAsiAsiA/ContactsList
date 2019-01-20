@@ -19,9 +19,9 @@ public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
     public ContactListItemDecorator() {
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        Resources r = App.getContext().getResources();
-        paint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.stroke_width));
-        offset = r.getDimensionPixelSize(R.dimen.offset);
+        Resources resources = App.getContext().getResources();
+        paint.setStrokeWidth(resources.getDimensionPixelSize(R.dimen.stroke_width));
+        offset = resources.getDimensionPixelSize(R.dimen.offset);
         halfOffset = offset / 2;
     }
 
