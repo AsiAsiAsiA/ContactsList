@@ -1,24 +1,24 @@
 package com.example.semen.contactslist.service;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.example.semen.contactslist.app.App;
 import com.example.semen.contactslist.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class ContactsManager {
+public class ContactsManager {
     private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
-    static List<Contact> getContacts(Context context) {
+    public static List<Contact> getContacts() {
         List<Contact> contactArrayList = new ArrayList<>();
 
-        ContentResolver contentResolver = context.getContentResolver();
+        ContentResolver contentResolver = App.getContext().getContentResolver();
 
         try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 null,
@@ -42,9 +42,11 @@ class ContactsManager {
     }
 
     //Получение контакта по ID
-    static Contact findContactById(String id, Context context) {
+    public static Contact findContactById(String id) {
         Contact contact = null;
-        ContentResolver contentResolver = context.getContentResolver();
+
+        ContentResolver contentResolver = App.getContext().getContentResolver();
+
         try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
                 ContactsContract.Contacts._ID + " = ?",

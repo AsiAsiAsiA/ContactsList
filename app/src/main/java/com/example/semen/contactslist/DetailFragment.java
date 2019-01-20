@@ -13,21 +13,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.service.AsyncResponseDetail;
-import com.example.semen.contactslist.service.DetailAsyncTask;
+import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
+import com.example.semen.contactslist.view.DetailFragmentView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment implements AsyncResponseDetail {
+public class DetailFragment extends MvpAppCompatFragment implements DetailFragmentView {
     private TextView tvName;
     private TextView tvPhoneNumber;
     private String contactId;
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
     private static final String _ID = "_id";
     private static final String EMPTY = "Empty";
+
+    @InjectPresenter
+    DetailFragmentPresenter detailFragmentPresenter;
 
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -66,32 +71,46 @@ public class DetailFragment extends Fragment implements AsyncResponseDetail {
     }
 
     @Override
+    public void onDestroyView() {
+        tvName = null;
+        tvPhoneNumber = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
             } else {
-                tvName.setText(getString(R.string.no_permission));
-                tvPhoneNumber.setText(getString(R.string.no_permission));
+                showPermissionsNotGranted();
             }
         }
     }
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        DetailAsyncTask detailAsyncTask = new DetailAsyncTask(contactId, this);
-        detailAsyncTask.execute(requireContext());
+        detailFragmentPresenter.loadContact(contactId);
     }
 
     @Override
     public void loadContactFromContentProvider(Contact contact) {
-        if (isResumed()) {
+        if (contact != null) {
             tvName.setText(getString(R.string.detailFragment_text,
                     getString(R.string.id),
                     contact.getName()));
             tvPhoneNumber.setText(getString(R.string.detailFragment_text,
                     getString(R.string.phone_number),
                     contact.getPhoneNumbers().toString()));
+        } else {
+            tvName.setText(getString(R.string.data_is_not_available));
+            tvPhoneNumber.setText(getString(R.string.data_is_not_available));
         }
+    }
+
+    @Override
+    public void showPermissionsNotGranted() {
+        tvName.setText(getString(R.string.data_is_not_available));
+        tvPhoneNumber.setText(getString(R.string.data_is_not_available));
     }
 }
