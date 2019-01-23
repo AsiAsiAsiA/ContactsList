@@ -1,7 +1,5 @@
 package com.example.semen.contactslist.presenter;
 
-import android.os.AsyncTask;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.semen.contactslist.model.Contact;
@@ -26,7 +24,7 @@ public class DetailFragmentPresenter extends MvpPresenter<DetailFragmentView> {
                 .subscribe(this::loadContactFromContentProvider);
     }
 
-    public void loadContactFromContentProvider(Contact contact){
+    private void loadContactFromContentProvider(Contact contact) {
         getViewState().loadContactFromContentProvider(contact);
     }
 }

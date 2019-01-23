@@ -1,11 +1,7 @@
 package com.example.semen.contactslist.presenter;
 
-import android.os.AsyncTask;
-import android.widget.Toast;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.ContactsManager;
 import com.example.semen.contactslist.view.ContactListFragmentView;
@@ -36,7 +32,7 @@ public class ContactsListFragmentPresenter extends MvpPresenter<ContactListFragm
         getViewState().showPermissionsNotGranted();
     }
 
-    public void loadList(List<Contact> contacts) {
+    private void loadList(List<Contact> contacts) {
         getViewState().loadList(contacts);
     }
 }
