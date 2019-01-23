@@ -15,9 +15,15 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
 import com.example.semen.contactslist.view.DetailFragmentView;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import dagger.android.support.AndroidSupportInjection;
 
 
 /**
@@ -34,6 +40,14 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     @InjectPresenter
     DetailFragmentPresenter detailFragmentPresenter;
 
+    @Inject
+    Provider<DetailFragmentPresenter> presenterProvider;
+
+    @ProvidePresenter
+    DetailFragmentPresenter providePresenter() {
+        return presenterProvider.get();
+    }
+
     public static DetailFragment newInstance(String id) {
         Bundle args = new Bundle();
 
@@ -42,6 +56,12 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        AndroidSupportInjection.inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

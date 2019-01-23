@@ -1,27 +1,32 @@
 package com.example.semen.contactslist.service;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.example.semen.contactslist.app.App;
 import com.example.semen.contactslist.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Single;
 
 public class ContactsManager {
     private static final String TAG = "ContactsManager";
 
+    @Inject
+    Context context;
+
     //Получение списка контактов из ContentProvider
-    public static Single<List<Contact>> getContacts() {
+    public Single<List<Contact>> getContacts() {
         return Single.fromCallable(() -> {
             List<Contact> contactArrayList = new ArrayList<>();
 
-            ContentResolver contentResolver = App.getContext().getContentResolver();
+            ContentResolver contentResolver = context.getContentResolver();
 
             try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     null,
@@ -46,10 +51,10 @@ public class ContactsManager {
     }
 
     //Получение контакта по ID
-    public static Single<Contact> findContactById(String id) {
+    public Single<Contact> findContactById(String id) {
         return Single.fromCallable(() -> {
             Contact contact = null;
-            ContentResolver contentResolver = App.getContext().getContentResolver();
+            ContentResolver contentResolver = context.getContentResolver();
             try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
                     ContactsContract.Contacts._ID + " = ?",

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.presenter.ContactsListFragmentPresenter;
@@ -25,6 +26,11 @@ import com.example.semen.contactslist.view.ContactListFragmentView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import dagger.android.support.AndroidSupportInjection;
 
 
 /**
@@ -39,10 +45,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @InjectPresenter
     ContactsListFragmentPresenter contactsListFragmentPresenter;
 
+    @Inject
+    Provider<ContactsListFragmentPresenter> presenterProvider;
+
+    @ProvidePresenter
+    ContactsListFragmentPresenter providePresenter() {
+        return presenterProvider.get();
+    }
+
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
     public static ContactListFragment newInstance() {
         return new ContactListFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        AndroidSupportInjection.inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -112,7 +132,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void loadList(List<Contact> contacts) {
-        if (contacts!=null){
+        if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
             contactsAdapter.setContacts(contacts);
         } else {
@@ -127,7 +147,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void finishLoading() {
-        Toast.makeText(requireContext(),R.string.contact_list_updated,Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.contact_list_updated, Toast.LENGTH_SHORT).show();
     }
 
     @Override

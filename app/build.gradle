@@ -35,7 +35,12 @@ dependencies {
 
     //Dagger
     implementation 'com.google.dagger:dagger:2.21'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
+
+    //Dagger-Android
     implementation 'com.google.dagger:dagger-android:2.21'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.21'
+    implementation 'com.google.dagger:dagger-android-support:2.21'
 
     //RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
