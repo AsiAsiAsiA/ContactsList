@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.example.semen.contactslist.model.Contact;
 
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 
 public class RepositoryImpl implements Repository {
-    private static final String TAG = "RepositoryImpl";
     private final Context context;
 
     @Inject
@@ -45,7 +43,6 @@ public class RepositoryImpl implements Repository {
 
                         Contact contact = new Contact(id, contactName, phoneNumbers);
                         contactArrayList.add(contact);
-                        Log.i(TAG, contact.toString());
                     }
                 }
             }
@@ -70,7 +67,6 @@ public class RepositoryImpl implements Repository {
                         List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
 
                         contact = new Contact(id, contactName, phoneNumbers);
-                        Log.i(TAG, contact.toString());
                     }
                 }
             }
