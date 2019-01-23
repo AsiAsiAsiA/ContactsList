@@ -22,14 +22,9 @@ import com.example.semen.contactslist.adapter.ContactsAdapter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.presenter.ContactsListFragmentPresenter;
 import com.example.semen.contactslist.view.ContactListFragmentView;
-import com.example.semen.contactslist.service.ContactsManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -39,7 +34,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private TextView tvContactListFragmentTitle;
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
-    private Disposable disposable;
     private RecyclerView recyclerView;
 
     @InjectPresenter
@@ -77,12 +71,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onDestroyView() {
         tvContactListFragmentTitle = null;
-        if (disposable != null) {
-            disposable.dispose();
-            contactsAdapter = null;
-            contactsList = null;
-            recyclerView = null;
-        }
+        contactsAdapter = null;
+        contactsList = null;
+        recyclerView = null;
         super.onDestroyView();
     }
 
@@ -116,17 +107,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     //запрос в ContentProvider в отдельном потоке RxJava
     private void queryContentProvider() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-        disposable = ContactsManager.getContacts()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(__ -> tvContactListFragmentTitle.setText(getString(R.string.reading_from_database)))
-                .doAfterTerminate(() -> Toast.makeText(requireContext(),
-                        getString(R.string.contact_list_updated),
-                        Toast.LENGTH_SHORT).show())
-                .subscribe(this::loadList);
         contactsListFragmentPresenter.getContactList();
     }
 
