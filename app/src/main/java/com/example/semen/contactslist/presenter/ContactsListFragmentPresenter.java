@@ -1,7 +1,5 @@
 package com.example.semen.contactslist.presenter;
 
-import android.os.AsyncTask;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.semen.contactslist.model.Contact;
@@ -10,50 +8,32 @@ import com.example.semen.contactslist.view.ContactListFragmentView;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 @InjectViewState
 public class ContactsListFragmentPresenter extends MvpPresenter<ContactListFragmentView> {
-    private ContactsAsyncTask contactsAsyncTask;
+    private Disposable disposable;
 
     public void getContactList() {
-        contactsAsyncTask = new ContactsAsyncTask();
-        contactsAsyncTask.execute();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (contactsAsyncTask != null) {
-            contactsAsyncTask.cancel(true);
-            contactsAsyncTask = null;
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
         }
-        super.onDestroy();
+        disposable = ContactsManager.getContacts()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(__ -> getViewState().startLoading())
+                .doAfterTerminate(() -> getViewState().finishLoading())
+                .subscribe(this::loadList);
     }
 
     public void noPermissions() {
         getViewState().showPermissionsNotGranted();
     }
 
-    class ContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
-        @Override
-        protected void onPreExecute() {
-            if (!isCancelled()) {
-                getViewState().startLoading();
-            }
-        }
-
-        @Override
-        protected List<Contact> doInBackground(Void... voids) {
-            if (!isCancelled()) {
-                return ContactsManager.getContacts();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Contact> contacts) {
-            getViewState().loadList(contacts);
-            getViewState().finishLoading();
-        }
+    private void loadList(List<Contact> contacts) {
+        getViewState().loadList(contacts);
     }
 }
-
 

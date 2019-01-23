@@ -11,59 +11,63 @@ import com.example.semen.contactslist.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
+
 public class ContactsManager {
     private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
-    public static List<Contact> getContacts() {
-        List<Contact> contactArrayList = new ArrayList<>();
+    public static Single<List<Contact>> getContacts() {
+        return Single.fromCallable(() -> {
+            List<Contact> contactArrayList = new ArrayList<>();
 
-        ContentResolver contentResolver = App.getContext().getContentResolver();
+            ContentResolver contentResolver = App.getContext().getContentResolver();
 
-        try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
-                null,
-                null,
-                null,
-                null)) {
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+            try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null)) {
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-                    List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
+                        List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
 
-                    Contact contact = new Contact(id, contactName, phoneNumbers);
-                    contactArrayList.add(contact);
-                    Log.i(TAG, contact.toString());
+                        Contact contact = new Contact(id, contactName, phoneNumbers);
+                        contactArrayList.add(contact);
+                        Log.i(TAG, contact.toString());
+                    }
                 }
             }
-        }
-        return contactArrayList;
+            return contactArrayList;
+        });
     }
 
     //Получение контакта по ID
-    public static Contact findContactById(String id) {
-        Contact contact = null;
+    public static Single<Contact> findContactById(String id) {
+        return Single.fromCallable(() -> {
+            Contact contact = null;
+            ContentResolver contentResolver = App.getContext().getContentResolver();
+            try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+                    new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
+                    ContactsContract.Contacts._ID + " = ?",
+                    new String[]{id},
+                    null)) {
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-        ContentResolver contentResolver = App.getContext().getContentResolver();
+                        List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
 
-        try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
-                new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
-                ContactsContract.Contacts._ID + " = ?",
-                new String[]{id},
-                null)) {
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-
-                    List<String> phoneNumbers = getListPhoneNumbers(contentResolver, id);
-
-                    contact = new Contact(id, contactName, phoneNumbers);
-                    Log.i(TAG, contact.toString());
+                        contact = new Contact(id, contactName, phoneNumbers);
+                        Log.i(TAG, contact.toString());
+                    }
                 }
             }
-        }
-        return contact;
+            return contact;
+        });
     }
 
     //Получение всех номеров одного контакта
