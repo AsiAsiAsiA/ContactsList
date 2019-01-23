@@ -8,39 +8,25 @@ import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.service.ContactsManager;
 import com.example.semen.contactslist.view.DetailFragmentView;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 @InjectViewState
 public class DetailFragmentPresenter extends MvpPresenter<DetailFragmentView> {
-    private String id;
-    private DetailAsyncTask detailAsyncTask;
-
+    private Disposable disposable;
 
     public void loadContact(String id) {
-        this.id = id;
-        detailAsyncTask = new DetailAsyncTask();
-        detailAsyncTask.execute();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
+        disposable = ContactsManager.findContactById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadContactFromContentProvider);
     }
 
-    @Override
-    public void onDestroy() {
-        if (detailAsyncTask != null) {
-            detailAsyncTask.cancel(true);
-            detailAsyncTask = null;
-        }
-        super.onDestroy();
-    }
-
-    class DetailAsyncTask extends AsyncTask<Void, Void, Contact> {
-        @Override
-        protected Contact doInBackground(Void... voids) {
-            if (!isCancelled()) {
-                return ContactsManager.findContactById(id);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Contact contact) {
-            getViewState().loadContactFromContentProvider(contact);
-        }
+    public void loadContactFromContentProvider(Contact contact){
+        getViewState().loadContactFromContentProvider(contact);
     }
 }

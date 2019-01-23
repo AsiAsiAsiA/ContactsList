@@ -40,6 +40,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
     private Disposable disposable;
+    private RecyclerView recyclerView;
 
     @InjectPresenter
     ContactsListFragmentPresenter contactsListFragmentPresenter;
@@ -78,23 +79,15 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         tvContactListFragmentTitle = null;
         if (disposable != null) {
             disposable.dispose();
-        contactsAdapter = null;
-        contactsList = null;
-        recyclerView = null;
-        super.onDestroyView();
-    }
-
-    @Override
-        tvContactListFragmentTitle = null;
-        if (disposableContactListFragment != null) {
-            disposableContactListFragment.dispose();
+            contactsAdapter = null;
+            contactsList = null;
+            recyclerView = null;
         }
-
-    @Override
         super.onDestroyView();
     }
-    public void onDestroyView() {
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 queryContentProvider();
@@ -126,7 +119,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
-        disposable = ContactsManager.getContacts(requireContext())
+        disposable = ContactsManager.getContacts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(__ -> tvContactListFragmentTitle.setText(getString(R.string.reading_from_database)))
@@ -139,7 +132,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void loadList(List<Contact> contacts) {
-        if (contacts!=null){
+        if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
             contactsAdapter.setContacts(contacts);
         } else {
@@ -154,7 +147,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void finishLoading() {
-        Toast.makeText(requireContext(),R.string.contact_list_updated,Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.contact_list_updated, Toast.LENGTH_SHORT).show();
     }
 
     @Override

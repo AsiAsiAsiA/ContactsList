@@ -18,11 +18,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.semen.contactslist.model.Contact;
 import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
 import com.example.semen.contactslist.view.DetailFragmentView;
-import com.example.semen.contactslist.service.ContactsManager;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -77,6 +74,10 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     public void onDestroyView() {
         tvName = null;
         tvPhoneNumber = null;
+        contactId = null;
+        if (disposable != null) {
+            disposable.dispose();
+        }
         super.onDestroyView();
     }
 
@@ -91,26 +92,10 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        tvName = null;
-        tvPhoneNumber = null;
-        contactId = null;
-        if (disposable != null) {
-            disposable.dispose();
-        }
-        super.onDestroyView();
-    }
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-        disposable = ContactsManager.findContactById(contactId, requireContext())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::loadContactFromContentProvider);
+        detailFragmentPresenter.loadContact(contactId);
     }
 
     @Override

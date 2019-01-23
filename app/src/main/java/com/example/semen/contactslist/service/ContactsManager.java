@@ -17,7 +17,7 @@ public class ContactsManager {
     private static final String TAG = "ContactsManager";
 
     //Получение списка контактов из ContentProvider
-    public static Single<List<Contact>> getContacts(Context context) {
+    public static Single<List<Contact>> getContacts() {
         return Single.fromCallable(() -> {
             List<Contact> contactArrayList = new ArrayList<>();
 
@@ -46,10 +46,10 @@ public class ContactsManager {
     }
 
     //Получение контакта по ID
-    public static Single<Contact> findContactById(String id, Context context) {
+    public static Single<Contact> findContactById(String id) {
         return Single.fromCallable(() -> {
             Contact contact = null;
-            ContentResolver contentResolver = context.getContentResolver();
+            ContentResolver contentResolver = App.getContext().getContentResolver();
             try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
                     ContactsContract.Contacts._ID + " = ?",
