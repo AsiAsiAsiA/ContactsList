@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -82,14 +81,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        tvContactListFragmentTitle = null;
-        contactsAdapter = null;
-        contactsList = null;
-        recyclerView = null;
-        super.onDestroyView();
-    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -125,6 +117,15 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
+    public void onDestroyView() {
+        tvContactListFragmentTitle = null;
+        contactsAdapter = null;
+        contactsList = null;
+        recyclerView = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -154,24 +155,17 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     //запрос в ContentProvider в отдельном потоке
-    private void queryContentProvider() {
-        contactsListFragmentPresenter.getContactList();
+    private void queryContentProvider(String query) {
+        contactsListFragmentPresenter.getContactList(query);
     }
 
     @Override
     public void loadList(List<Contact> contacts) {
-        if (contacts!=null){
+        if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
-            contactsAdapter.setContacts(contacts);
-        } else {
-            tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
-            contactsList = contacts;
-
-            if (searchString != null) {
-                searchView.setIconified(false);
-                searchView.setQuery(searchString, true);
-            }
             contactsAdapter.updateContacts(contacts);
+        } else {
+            tvContactListFragmentTitle.setText(getString(R.string.no_permission));
         }
     }
 
@@ -182,12 +176,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void finishLoading() {
-        Toast.makeText(requireContext(),R.string.contact_list_updated,Toast.LENGTH_SHORT).show();
+        tvContactListFragmentTitle.setText(R.string.contactListFragment_title);
     }
 
     @Override
     public void showPermissionsNotGranted() {
-        tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+        tvContactListFragmentTitle.setText(getString(R.string.no_permission));
     }
 
     @Override
