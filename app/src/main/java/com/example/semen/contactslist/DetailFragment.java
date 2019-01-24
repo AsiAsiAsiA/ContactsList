@@ -2,6 +2,7 @@ package com.example.semen.contactslist;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -59,9 +61,9 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
-        super.onCreate(savedInstanceState);
+        super.onAttach(context);
     }
 
     @Override
@@ -132,5 +134,10 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     public void showPermissionsNotGranted() {
         tvName.setText(getString(R.string.data_is_not_available));
         tvPhoneNumber.setText(getString(R.string.data_is_not_available));
+    }
+
+    @Override
+    public void showThrowableMessage(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 }

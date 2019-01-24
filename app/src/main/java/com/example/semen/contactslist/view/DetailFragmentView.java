@@ -12,4 +12,7 @@ public interface DetailFragmentView extends MvpView {
 
     @StateStrategyType(SingleStateStrategy.class)
     void showPermissionsNotGranted();
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void showThrowableMessage(String message);
 }

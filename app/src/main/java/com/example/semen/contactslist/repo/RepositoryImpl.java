@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.model.Contact;
 
 import java.util.ArrayList;
@@ -69,6 +70,9 @@ public class RepositoryImpl implements Repository {
                         contact = new Contact(id, contactName, phoneNumbers);
                     }
                 }
+            }
+            if (contact == null) {
+                throw new NotFoundContactException(context.getString(R.string.not_found_contact_exception));
             }
             return contact;
         });

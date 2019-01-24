@@ -21,4 +21,7 @@ public interface ContactListFragmentView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void finishLoading();
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void showThrowableMessage(String message);
 }

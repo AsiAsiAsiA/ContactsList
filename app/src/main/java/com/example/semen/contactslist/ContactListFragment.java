@@ -2,6 +2,7 @@ package com.example.semen.contactslist;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,9 +61,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
-        super.onCreate(savedInstanceState);
+        super.onAttach(context);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void loadList(List<Contact> contacts) {
+    public void loadList(@Nullable List<Contact> contacts) {
         if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
             contactsAdapter.setContacts(contacts);
@@ -153,6 +154,11 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void showPermissionsNotGranted() {
         tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+    }
+
+    @Override
+    public void showThrowableMessage(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
