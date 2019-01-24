@@ -2,7 +2,7 @@ package com.example.semen.contactslist.di;
 
 import android.content.Context;
 
-import com.example.semen.contactslist.app.App;
+import com.example.semen.contactslist.di.app.App;
 
 import javax.inject.Singleton;
 

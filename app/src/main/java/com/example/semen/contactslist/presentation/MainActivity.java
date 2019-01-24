@@ -1,10 +1,11 @@
-package com.example.semen.contactslist;
+package com.example.semen.contactslist.presentation;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.example.semen.contactslist.R;
 
 import javax.inject.Inject;
 

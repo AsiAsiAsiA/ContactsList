@@ -1,4 +1,4 @@
-package com.example.semen.contactslist.app;
+package com.example.semen.contactslist.di.app;
 
 import android.app.Activity;
 import android.app.Application;

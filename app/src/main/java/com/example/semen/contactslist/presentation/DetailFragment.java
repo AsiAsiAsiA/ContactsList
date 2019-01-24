@@ -1,4 +1,4 @@
-package com.example.semen.contactslist;
+package com.example.semen.contactslist.presentation;
 
 
 import android.Manifest;
@@ -18,9 +18,10 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.presenter.DetailFragmentPresenter;
-import com.example.semen.contactslist.view.DetailFragmentView;
+import com.example.semen.contactslist.R;
+import com.example.semen.contactslist.domain.model.Contact;
+import com.example.semen.contactslist.presentation.presenter.DetailFragmentPresenter;
+import com.example.semen.contactslist.presentation.view.DetailFragmentView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

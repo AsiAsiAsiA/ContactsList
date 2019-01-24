@@ -1,9 +1,9 @@
 package com.example.semen.contactslist.di;
 
-import com.example.semen.contactslist.MainActivity;
+import com.example.semen.contactslist.data.repo.Repository;
+import com.example.semen.contactslist.data.repo.RepositoryImpl;
 import com.example.semen.contactslist.di.scope.ActivityScope;
-import com.example.semen.contactslist.repo.Repository;
-import com.example.semen.contactslist.repo.RepositoryImpl;
+import com.example.semen.contactslist.presentation.MainActivity;
 
 import javax.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.example.semen.contactslist.repo;
+package com.example.semen.contactslist.data.repo;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.example.semen.contactslist.R;
-import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.domain.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;

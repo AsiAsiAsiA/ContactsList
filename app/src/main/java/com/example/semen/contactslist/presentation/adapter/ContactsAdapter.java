@@ -1,4 +1,4 @@
-package com.example.semen.contactslist.adapter;
+package com.example.semen.contactslist.presentation.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.semen.contactslist.R;
-import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.domain.model.Contact;
 
 import java.util.List;
 

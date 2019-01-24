@@ -1,6 +1,6 @@
-package com.example.semen.contactslist.repo;
+package com.example.semen.contactslist.data.repo;
 
-import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.domain.model.Contact;
 
 import java.util.List;
 
