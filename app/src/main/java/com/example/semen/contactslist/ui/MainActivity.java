@@ -1,4 +1,4 @@
-package com.example.semen.contactslist.presentation;
+package com.example.semen.contactslist.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

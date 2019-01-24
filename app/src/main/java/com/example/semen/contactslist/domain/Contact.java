@@ -1,4 +1,4 @@
-package com.example.semen.contactslist.domain.model;
+package com.example.semen.contactslist.domain;
 
 import android.support.annotation.NonNull;
 

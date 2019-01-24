@@ -1,10 +1,10 @@
-package com.example.semen.contactslist.presentation.presenter;
+package com.example.semen.contactslist.ui.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.semen.contactslist.data.repo.Repository;
-import com.example.semen.contactslist.domain.model.Contact;
-import com.example.semen.contactslist.presentation.view.ContactListFragmentView;
+import com.example.semen.contactslist.domain.Contact;
+import com.example.semen.contactslist.repo.Repository;
+import com.example.semen.contactslist.ui.view.ContactListFragmentView;
 
 import java.util.List;
 
