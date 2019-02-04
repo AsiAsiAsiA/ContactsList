@@ -1,7 +1,8 @@
-package com.example.semen.contactslist;
+package com.example.semen.contactslist.ui;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +19,20 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.example.semen.contactslist.adapter.ContactsAdapter;
-import com.example.semen.contactslist.model.Contact;
-import com.example.semen.contactslist.presenter.ContactsListFragmentPresenter;
-import com.example.semen.contactslist.view.ContactListFragmentView;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.semen.contactslist.R;
+import com.example.semen.contactslist.domain.Contact;
+import com.example.semen.contactslist.ui.adapter.ContactsAdapter;
+import com.example.semen.contactslist.ui.presenter.ContactsListFragmentPresenter;
+import com.example.semen.contactslist.ui.view.ContactListFragmentView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import dagger.android.support.AndroidSupportInjection;
 
 
 /**
@@ -39,10 +47,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @InjectPresenter
     ContactsListFragmentPresenter contactsListFragmentPresenter;
 
+    @Inject
+    Provider<ContactsListFragmentPresenter> presenterProvider;
+
+    @ProvidePresenter
+    ContactsListFragmentPresenter providePresenter() {
+        return presenterProvider.get();
+    }
+
     private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
     public static ContactListFragment newInstance() {
         return new ContactListFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
     }
 
     @Override
@@ -111,8 +133,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void loadList(List<Contact> contacts) {
-        if (contacts!=null){
+    public void loadList(@Nullable List<Contact> contacts) {
+        if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
             contactsAdapter.setContacts(contacts);
         } else {
@@ -127,12 +149,17 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void finishLoading() {
-        Toast.makeText(requireContext(),R.string.contact_list_updated,Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.contact_list_updated, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showPermissionsNotGranted() {
         tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+    }
+
+    @Override
+    public void showThrowableMessage(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
