@@ -1,12 +1,12 @@
-package com.example.semen.contactslist.adapter;
+package com.example.semen.contactslist.ui.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.example.semen.contactslist.model.Contact;
+import com.example.semen.contactslist.domain.Contact;
 
 import java.util.List;
 
-class ContactListDiffUtilCallback extends DiffUtil.Callback {
+public class ContactListDiffUtilCallback extends DiffUtil.Callback {
     private final List<Contact> newList;
     private final List<Contact> oldList;
 

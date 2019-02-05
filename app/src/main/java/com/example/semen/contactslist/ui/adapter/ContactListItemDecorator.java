@@ -1,5 +1,6 @@
-package com.example.semen.contactslist.adapter;
+package com.example.semen.contactslist.ui.adapter;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,17 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.example.semen.contactslist.R;
-import com.example.semen.contactslist.app.App;
+
+import javax.inject.Inject;
+
 
 public class ContactListItemDecorator extends RecyclerView.ItemDecoration {
     private final Paint paint;
     private final int offset;
     private final int halfOffset;
 
-    public ContactListItemDecorator() {
+    @Inject
+    public ContactListItemDecorator(Context context) {
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        Resources resources = App.getContext().getResources();
+        Resources resources = context.getResources();
         paint.setStrokeWidth(resources.getDimensionPixelSize(R.dimen.stroke_width));
         offset = resources.getDimensionPixelSize(R.dimen.offset);
         halfOffset = offset / 2;

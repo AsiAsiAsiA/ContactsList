@@ -41,7 +41,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     private static final String EMPTY = "Empty";
 
     @InjectPresenter
-    DetailFragmentPresenter detailFragmentPresenter;
+    DetailFragmentPresenter presenter;
 
     @Inject
     Provider<DetailFragmentPresenter> presenterProvider;
@@ -113,7 +113,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        detailFragmentPresenter.loadContact(contactId);
+        presenter.loadContact(contactId);
     }
 
     @Override
