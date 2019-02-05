@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 
 import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.domain.Contact;
@@ -24,16 +25,23 @@ public class RepositoryImpl implements Repository {
     }
 
     //Получение списка контактов из ContentProvider
-    public Single<List<Contact>> getContacts() {
+    public Single<List<Contact>> getContacts(@Nullable String name) {
         return Single.fromCallable(() -> {
             List<Contact> contactArrayList = new ArrayList<>();
-
             ContentResolver contentResolver = context.getContentResolver();
+
+            String SELECTION_CONTACT_LIST = null;
+            String[] SELECTION_ARGS = null;
+
+            if (name != null && !name.isEmpty()) {
+                SELECTION_CONTACT_LIST = ContactsContract.CommonDataKinds.Contactables.DISPLAY_NAME_PRIMARY + " LIKE ?";
+                SELECTION_ARGS = new String[]{"%" + name + "%"};
+            }
 
             try (Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     null,
-                    null,
-                    null,
+                    SELECTION_CONTACT_LIST,
+                    SELECTION_ARGS,
                     null)) {
                 if (cursor != null) {
                     while (cursor.moveToNext()) {

@@ -2,6 +2,7 @@ package com.example.semen.contactslist.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,20 +14,35 @@ import com.example.semen.contactslist.domain.Contact;
 
 import java.util.List;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
 
     private ItemClickListener itemClickListener;
-    private final List<Contact> contacts;
+    private List<Contact> contacts;
+    private Disposable disposable;
 
     public ContactsAdapter(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
-    //Устанавлиет новый список и обновляет RecyclerView
-    public void setContacts(List<Contact> contacts) {
-        this.contacts.clear();
-        this.contacts.addAll(contacts);
-        notifyDataSetChanged();
+    //Устанавлиет новый список и обновляет RecyclerView с помощью DiffUtil
+    public void updateContacts(List<Contact> contacts) {
+        disposable = Single.fromCallable(() ->
+                DiffUtil.calculateDiff(new ContactListDiffUtilCallback(contacts, this.contacts)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(diffResult -> {
+                    setContacts(contacts);
+                    diffResult.dispatchUpdatesTo(this);
+                });
+    }
+
+    private void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
     }
 
     @NonNull
@@ -45,6 +61,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     @Override
     public int getItemCount() {
         return contacts.size();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ContactsViewHolder holder) {
+        if (disposable != null) {
+            disposable.dispose();
+        }
+        super.onViewDetachedFromWindow(holder);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {

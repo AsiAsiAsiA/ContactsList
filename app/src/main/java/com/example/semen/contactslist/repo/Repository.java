@@ -7,7 +7,7 @@ import java.util.List;
 import io.reactivex.Single;
 
 public interface Repository {
-    Single<List<Contact>> getContacts();
+    Single<List<Contact>> getContacts(String name);
 
     Single<Contact> findContactById(String id);
 }

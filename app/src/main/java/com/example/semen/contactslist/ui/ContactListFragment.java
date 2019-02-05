@@ -11,9 +11,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +27,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.semen.contactslist.R;
 import com.example.semen.contactslist.domain.Contact;
+import com.example.semen.contactslist.ui.adapter.ContactListItemDecorator;
 import com.example.semen.contactslist.ui.adapter.ContactsAdapter;
 import com.example.semen.contactslist.ui.presenter.ContactsListFragmentPresenter;
 import com.example.semen.contactslist.ui.view.ContactListFragmentView;
@@ -43,19 +49,22 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private ContactsAdapter contactsAdapter;
     private List<Contact> contactsList;
     private RecyclerView recyclerView;
-
+    private static final int REQUEST_CODE_READ_CONTACTS = 1;
+    private static final String SEARCH_KEY = "search_key";
     @InjectPresenter
-    ContactsListFragmentPresenter contactsListFragmentPresenter;
+    ContactsListFragmentPresenter presenter;
+    @Inject
+    ContactListItemDecorator contactListItemDecorator;
+    private SearchView searchView;
 
     @Inject
     Provider<ContactsListFragmentPresenter> presenterProvider;
+    private String searchString;
 
     @ProvidePresenter
     ContactsListFragmentPresenter providePresenter() {
         return presenterProvider.get();
     }
-
-    private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
     public static ContactListFragment newInstance() {
         return new ContactListFragment();
@@ -76,6 +85,11 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
+
+        if (savedInstanceState != null) {
+            searchString = savedInstanceState.getString(SEARCH_KEY);
+        }
 
         contactsList = new ArrayList<>();
         initViews(view);
@@ -83,11 +97,44 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         //получаем разрешения
         int hasReadContactPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS);
         if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            queryContentProvider();
+            presenter.getContactList(searchString);
         } else {
             // вызываем диалоговое окно для установки разрешений
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menuSearch);
+        searchView = (SearchView) searchItem.getActionView();
+
+        if (searchString != null && !searchString.isEmpty()) {
+            searchView.setIconified(false);
+            searchView.setQuery(searchString, true);
+            searchView.clearFocus();
+        }
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //реагирует на отправление текста
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("onQueryTextSubmit", query);
+                presenter.getContactList(query);
+                return true;
+            }
+
+            //реагирует на изменение текста(на каждую букву)
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.i("onQueryTextChange", query);
+                presenter.getContactList(query);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -100,12 +147,18 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SEARCH_KEY, searchView.getQuery().toString());
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                queryContentProvider();
+                presenter.getContactList(searchString);
             } else {
-                contactsListFragmentPresenter.noPermissions();
+                presenter.noPermissions();
             }
         }
     }
@@ -117,6 +170,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactsAdapter = new ContactsAdapter(contactsList);
         contactsAdapter.setItemClickListener(this);
         recyclerView.setAdapter(contactsAdapter);
+        recyclerView.addItemDecoration(contactListItemDecorator);
     }
 
     //Размещение фрагмента во фрейм
@@ -127,18 +181,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 .commit();
     }
 
-    //запрос в ContentProvider в отдельном потоке
-    private void queryContentProvider() {
-        contactsListFragmentPresenter.getContactList();
-    }
-
     @Override
     public void loadList(@Nullable List<Contact> contacts) {
         if (contacts != null) {
             tvContactListFragmentTitle.setText(getString(R.string.contactListFragment_title));
-            contactsAdapter.setContacts(contacts);
+            contactsAdapter.updateContacts(contacts);
         } else {
-            tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+            tvContactListFragmentTitle.setText(getString(R.string.no_permission));
         }
     }
 
@@ -154,7 +203,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void showPermissionsNotGranted() {
-        tvContactListFragmentTitle.setText(getString(R.string.data_is_not_available));
+        tvContactListFragmentTitle.setText(getString(R.string.no_permission));
     }
 
     @Override

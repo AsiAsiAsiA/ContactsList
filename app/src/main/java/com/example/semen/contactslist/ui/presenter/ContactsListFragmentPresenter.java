@@ -25,8 +25,8 @@ public class ContactsListFragmentPresenter extends MvpPresenter<ContactListFragm
         this.repository = repository;
     }
 
-    public void getContactList() {
-        disposable = repository.getContacts()
+    public void getContactList(@Nullable String name) {
+        disposable = repository.getContacts(name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> getViewState().startLoading())

@@ -41,7 +41,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
     private static final String EMPTY = "Empty";
 
     @InjectPresenter
-    DetailFragmentPresenter detailFragmentPresenter;
+    DetailFragmentPresenter presenter;
 
     @Inject
     Provider<DetailFragmentPresenter> presenterProvider;
@@ -113,7 +113,7 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
 
     //запрос в ContentProvider в отдельном потоке
     private void queryContentProvider() {
-        detailFragmentPresenter.loadContact(contactId);
+        presenter.loadContact(contactId);
     }
 
     @Override
@@ -126,15 +126,15 @@ public class DetailFragment extends MvpAppCompatFragment implements DetailFragme
                     getString(R.string.phone_number),
                     contact.getPhoneNumbers().toString()));
         } else {
-            tvName.setText(getString(R.string.data_is_not_available));
-            tvPhoneNumber.setText(getString(R.string.data_is_not_available));
+            tvName.setText(getString(R.string.no_permission));
+            tvPhoneNumber.setText(getString(R.string.no_permission));
         }
     }
 
     @Override
     public void showPermissionsNotGranted() {
-        tvName.setText(getString(R.string.data_is_not_available));
-        tvPhoneNumber.setText(getString(R.string.data_is_not_available));
+        tvName.setText(getString(R.string.no_permission));
+        tvPhoneNumber.setText(getString(R.string.no_permission));
     }
 
     @Override
